@@ -1,37 +1,30 @@
 import { useState } from "react";
-import {useNavigate} from "react-router-dom"
-
 
 function CadastroUsuario() {
-    const [nome, setNome] = useState("")
-    const [email, setEmail] = useState("")
-    const [senha, setSenha] = useState("");
+  
+  const [nome, setNome] = useState("")
+  const [email, setEmail] = useState("")
+  const [senha, setSenha] = useState("");
 
-    const navigate = useNavigate();
 
-    function entrar() {
-        if(nome === "" || email === "" || senha === "" ) {
-            alert('Prencha todos os campos')
-            return;
-        }
+  function entrar(e) {
+    e.preventDefault();
 
-        if(!email.includes("@") || !email.includes(".")) {
-            alert('Digite um email válido!')
-            setEmail('')
-            return
-        }
-
-        alert('Login efetuado');
-
-        navigate('/', {
-            state: {nome, email}
-        })
+    if (nome === "" || email === "" || senha === "") {
+      alert('Prencha todos os campos')
+      return;
+    } else {
+      alert('Login efetuado');
     }
 
+  }
 
-     return (
+  return (
     <div className="container">
-      <div className="login-box">
+      <header>
+        <title>CADASTRO</title>
+      </header>
+      <form className="cadastro-box" onSubmit={entrar} >
         <h2>CADASTRO</h2>
 
         <input
@@ -49,16 +42,16 @@ function CadastroUsuario() {
         />
 
 
-        <input 
-        type="password"
-        minLength={4}
-        placeholder="Digite uma senha"
-        value={senha}
-        onChange={(e) => setSenha(e.target.value)}
+        <input
+          type="password"
+          minLength={4}
+          placeholder="Digite sua senha"
+          value={senha}
+          onChange={(e) => setSenha(e.target.value)}
         />
 
-        <button onClick={entrar}>Entrar</button>
-      </div>
+        <button type="submit">Entrar</button>
+      </form>
     </div>
   );
 }
