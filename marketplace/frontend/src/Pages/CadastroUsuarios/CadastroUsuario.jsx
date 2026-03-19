@@ -17,6 +17,31 @@ function CadastroUsuario() {
       alert('Login efetuado');
     }
 
+    //Conexão com o Back-End
+    fetch("http://localhost:3001/cadastro", {
+      method: 'POST',
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        nome,
+        email,
+        senha
+      })
+    })
+     .then(res => res.text())
+     .then(data => {
+      alert(data);
+
+      setNome("");
+      setEmail("");
+      setSenha("");
+     })
+      .catch(err => {
+        console.error(err);
+        alert("Erro ao conectar com o servidor");
+      })
+
   }
 
   return (
