@@ -1,9 +1,8 @@
-import { useLocation, useNavigate } from 'react-router-dom'
+import { useLocation } from 'react-router-dom'
 
 
 function UserLogin() {
 
-  const navigate = useNavigate();
   const location = useLocation();
 
   const email = location.state?.email
