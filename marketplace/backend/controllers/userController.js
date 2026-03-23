@@ -2,7 +2,7 @@ const connection = require("../database/connection")
 const bcrypt = require("bcrypt")
 
 exports.createUser = async (req, res) => {
-  const { nome, email, senha, rua, cidade, estado } = req.body;
+  const { nome, email, senha, rua, numero, cidade, estado, bairro, cep  } = req.body;
 
   try {
     // criptografa senha
@@ -18,14 +18,16 @@ exports.createUser = async (req, res) => {
 
       const idUsuario = result.insertId;
 
+      console.log(req.body);
+      
       const sqlEndereco = `
-        INSERT INTO enderecos (id_usuario, rua, cidade, estado)
-        VALUES (?, ?, ?, ?)
+        INSERT INTO enderecos (id_usuario, rua, numero, cidade, estado, bairro, cep)
+        VALUES (?, ?, ?, ?, ?, ?, ?)
       `;
 
       connection.query(
         sqlEndereco,
-        [idUsuario, rua, cidade, estado],
+        [idUsuario, rua, numero || null, cidade, estado, bairro, cep],
         (err2) => {
           if (err2) {
             console.error(err2);

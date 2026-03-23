@@ -1,6 +1,9 @@
 import { useState } from "react";
+import {useNavigate} from "react-router-dom"
 
 function CadastroUsuario() {
+
+  const navigate = useNavigate("")
 
   //Controle de etapa
   const [etapa, setEtapa] = useState(1)
@@ -79,20 +82,26 @@ function CadastroUsuario() {
         email,
         senha,
         rua,
+        numero,
         cidade,
-        estado
+        estado,
+        bairro,
+        cep
       })
     })
       .then(res => res.text())
       .then(data => {
         alert(data);
+        navigate("/")
 
         setNome("");
         setEmail("");
         setSenha("");
         setRua("");
+        setNumero("");
         setCidade("");
-        setCidade("");
+        setBairro("");
+        setCep("");
         setEtapa(1);
       })
       .catch(err => {
@@ -138,9 +147,12 @@ function CadastroUsuario() {
             />
             {erroSenha && <span className="erro">{erroSenha}</span>}
 
+            <div>
+              <button type="button" onClick={() => navigate("/")}>Login</button>
             <button type="button" onClick={proximo}>
               Próximo →
             </button>
+            </div>
           </div>
         )}
 
@@ -191,7 +203,7 @@ function CadastroUsuario() {
 
             <label>Numero</label>
             <input
-              type="number"
+              type="text"
               placeholder="Ex: 00"
               value={numero}
               onChange={(e) => setNumero(e.target.value)}

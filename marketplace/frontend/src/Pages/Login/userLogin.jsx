@@ -10,7 +10,7 @@ function UserLogin() {
   const navigate = useNavigate()
 
 
-  function entrar() {
+  function entrar(e) {
     e.preventDefault();
 
     if (email === "" || senha === "") {
@@ -67,7 +67,17 @@ function UserLogin() {
         onChange={(e) => setSenha(e.target.value)}
       />
 
-      <button type='submit'>Entrar</button>
+      <button type='submit'>Login</button>
+
+      <p>
+        Não tem conta? {" "}
+        <span
+        onClick= {() => navigate("/cadastro")}
+        style={{color: "blue", cursor: "pointer"}}  
+          >
+          Cadastre-se
+        </span>
+      </p>
 
     </form>
 
