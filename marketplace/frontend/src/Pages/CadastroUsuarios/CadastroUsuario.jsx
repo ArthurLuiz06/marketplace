@@ -19,22 +19,37 @@ function CadastroUsuario() {
   const [cep, setCep] = useState("");
 
 
+  // Estado de erro
+  const [erroNome, setErroNome] = useState("")
+  const [erroEmail, setErroEmail] = useState("")
+  const [erroSenha, setErroSenha] = useState("")
+
+
   function proximo() {
-    if (nome === "" || email === "" || senha === "") {
-      alert('Prencha todos os campos')
+    let valido = true
+
+    if (nome === "") {
+      setErroNome('Digite seu nome')
+      valido = false
       return;
+    } else {
+      setErroNome("")
     }
 
     if (!email.includes("@") || !email.includes(".")) {
-      alert('Digite um email válido!');
-      setEmail("");
+      setErroEmail('Digite um email válido!');
+      valido = false
       return;
+    } else {
+      setErroEmail("")
     }
 
     if (senha.length < 4) {
-      alert('A senha deve ter no minimo 4 caracteres!')
-      setSenha("")
+      setErroSenha('Mínimo de 4 caracteres!')
+      valido = false
       return;
+    } else {
+      setErroSenha("")
     }
 
     setEtapa(2)
@@ -104,6 +119,7 @@ function CadastroUsuario() {
               value={nome}
               onChange={(e) => setNome(e.target.value)}
             />
+            {erroNome && <span className="erro">{erroNome}</span>}
 
             <input
               type="email"
@@ -111,6 +127,7 @@ function CadastroUsuario() {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
             />
+            {erroEmail && <span className="erro">{erroEmail}</span>}
 
 
             <input
@@ -119,6 +136,7 @@ function CadastroUsuario() {
               value={senha}
               onChange={(e) => setSenha(e.target.value)}
             />
+            {erroSenha && <span className="erro">{erroSenha}</span>}
 
             <button type="button" onClick={proximo}>
               Próximo →
@@ -129,6 +147,7 @@ function CadastroUsuario() {
         {/* ETAPA 2 */}
         {etapa === 2 && (
           <div className="step2">
+            <label>Endereço</label>
             <input
               type="text"
               placeholder="Rua"
@@ -136,6 +155,7 @@ function CadastroUsuario() {
               onChange={(e) => setRua(e.target.value)}
             />
 
+            <label>Cidade</label>
             <input
               type="text"
               placeholder="Cidade"
@@ -143,6 +163,7 @@ function CadastroUsuario() {
               onChange={(e) => setCidade(e.target.value)}
             />
 
+            <label>Estado</label>
             <input
               type="text"
               placeholder="Ex: AL"
@@ -151,25 +172,29 @@ function CadastroUsuario() {
               onChange={(e) => setEstado(e.target.value)}
             />
 
-            <input 
-            type="text"
-            placeholder="Ex: Centro"
-            value={bairro}
-            onChange={(e) => setBairro(e.target.value)} 
+
+            <label>Logradouro</label>
+            <input
+              type="text"
+              placeholder="Ex: Centro"
+              value={bairro}
+              onChange={(e) => setBairro(e.target.value)}
             />
 
-            <input 
-            type="number"
-            placeholder="Ex: 00000-000"
-            value={cep}
-            onChange={(e) => setCep(e.target.value)}
+            <label>CEP</label>
+            <input
+              type="number"
+              placeholder="Ex: 00000-000"
+              value={cep}
+              onChange={(e) => setCep(e.target.value)}
             />
 
-            <input 
-            type="number"
-            placeholder="Ex: 00"
-            value={numero}
-            onChange={(e) => setNumero(e.target.value)} 
+            <label>Numero</label>
+            <input
+              type="number"
+              placeholder="Ex: 00"
+              value={numero}
+              onChange={(e) => setNumero(e.target.value)}
             />
 
             <div style={{ display: "flex", gap: "10px" }}>
