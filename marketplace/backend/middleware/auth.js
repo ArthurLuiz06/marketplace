@@ -16,8 +16,8 @@ function authMiddleware(req, res, next) {
 
         next()
     }catch(error) {
-        return req.status(401).json({error: "token inválido"})
-    }
+        return res.status(401).json({error: "token inválido"})
+    }   
 }
 
 module.exports = authMiddleware

@@ -1,5 +1,6 @@
 const connection = require("../database/connection")
 const bcrypt = require("bcrypt")
+const jwt = require("jsonwebtoken")
 
 exports.createUser = async (req, res) => {
   const { nome, email, senha, rua, numero, cidade, estado, bairro, cep } = req.body;
@@ -49,6 +50,8 @@ exports.createUser = async (req, res) => {
 exports.loginUser = (req, res) => {
   const { email, senha } = req.body;
 
+  
+
   const sql = "SELECT * FROM usuarios WHERE email = ?";
 
   connection.query(sql, [email], async (err, result) => {
@@ -70,7 +73,7 @@ exports.loginUser = (req, res) => {
       return res.status(401).send("Senha incorreta");
     }
 
-    const token = jwt.sing(
+    const token = jwt.sign(
       { id: usuario.id_usuario },
       "seu_segredo",
       { expiresIn: "1h" }
@@ -159,3 +162,30 @@ exports.updatePerfil = (req, res) => {
     )
   })
 }
+
+
+
+exports.getPerfil = (req, res) =>  {
+    const userId = req.user.id;
+
+    const sql = `
+        SELECT u.nome, u.email, e.rua, e.cidade, e.estado, e.bairro, e.numero, e.cep
+        FROM usuarios u
+        LEFT JOIN enderecos e ON u.id_usuario = e.id_usuario
+        WHERE u.id_usuario = ?
+    `;
+
+    connection.query(sql, [userId], (err, result) => {
+        if (err) {
+            console.log(err);
+            return res.status(500).json({ error: "Erro no servidor" });
+        }
+
+        if (result.length === 0) {
+            return res.status(404).json({ error: "Usuário não encontrado" });
+        }
+
+        return res.json({ user: result[0] });
+    });
+}
+

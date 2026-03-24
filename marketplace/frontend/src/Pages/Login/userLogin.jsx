@@ -46,7 +46,7 @@ function UserLogin() {
           // salva token
           localStorage.setItem("token", data.token);
 
-          navigate("/home", {
+          navigate("/", {
             state: {
               nome: data.usuario.nome
             }

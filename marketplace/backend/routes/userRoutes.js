@@ -8,5 +8,6 @@ router.post("/cadastro", userController.createUser);
 router.post("/login", userController.loginUser)
 
 router.put("/perfil", authMiddleware,userController.updatePerfil)
+router.get("/perfil", authMiddleware, userController.getPerfil);
 
 module.exports = router;
