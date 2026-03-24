@@ -1,14 +1,25 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom'
+import "./LoginStyle.css"
 
 function UserLogin() {
 
   const [email, setEmail] = useState("");
   const [senha, setSenha] = useState("");
 
+  const [saindo, setSaindo] = useState(false)
+
 
   const navigate = useNavigate()
 
+
+  function irParaCadastro() {
+    setSaindo(true);
+
+    setTimeout(() => {
+      navigate("/cadastro");
+    }, 300) // tempo de animação
+  }
 
   function entrar(e) {
     e.preventDefault();
@@ -30,17 +41,19 @@ function UserLogin() {
     })
       .then(res => res.json())
       .then(data => {
-        if (data.usuario) {
-          alert(data.mensagem);
+        if (data.token) {
+
+          // salva token
+          localStorage.setItem("token", data.token);
 
           navigate("/home", {
             state: {
-              nome: data.usuario.nome,
-              email: data.usuario.email
+              nome: data.usuario.nome
             }
-          })
+          });
+
         } else {
-          alert('Erro no login')
+          alert(data.mensagem || "Erro no login");
         }
       })
       .catch(err => {
@@ -49,39 +62,37 @@ function UserLogin() {
       })
   }
 
-  return (
-    <form onSubmit={entrar}>
+ return (
+  <div className={`login-container ${saindo ? "fade-out" : "fade-in"}`}>
+    <form className="login-box" onSubmit={entrar}>
       <h2>LOGIN</h2>
 
       <input
-        type='email'
-        placeholder='Email'
+        type="email"
+        placeholder="Email"
         value={email}
         onChange={(e) => setEmail(e.target.value)}
       />
 
       <input
-        type='password'
-        placeholder='Senha'
+        type="password"
+        placeholder="Senha"
         value={senha}
         onChange={(e) => setSenha(e.target.value)}
       />
 
-      <button type='submit'>Login</button>
+      <button type="submit">Entrar</button>
 
       <p>
-        Não tem conta? {" "}
-        <span
-        onClick= {() => navigate("/cadastro")}
-        style={{color: "blue", cursor: "pointer"}}  
-          >
+        Não tem conta?{" "}
+        <span onClick= {() => navigate("/cadastro")}
+        >
           Cadastre-se
         </span>
       </p>
-
     </form>
-
-  );
+  </div>
+);
 
 }
 

@@ -1,8 +1,9 @@
+const { Connection } = require("mysql2");
 const connection = require("../database/connection")
 const bcrypt = require("bcrypt")
 
 exports.createUser = async (req, res) => {
-  const { nome, email, senha, rua, numero, cidade, estado, bairro, cep  } = req.body;
+  const { nome, email, senha, rua, numero, cidade, estado, bairro, cep } = req.body;
 
   try {
     // criptografa senha
@@ -19,7 +20,7 @@ exports.createUser = async (req, res) => {
       const idUsuario = result.insertId;
 
       console.log(req.body);
-      
+
       const sqlEndereco = `
         INSERT INTO enderecos (id_usuario, rua, numero, cidade, estado, bairro, cep)
         VALUES (?, ?, ?, ?, ?, ?, ?)
@@ -70,8 +71,15 @@ exports.loginUser = (req, res) => {
       return res.status(401).send("Senha incorreta");
     }
 
+    const token = jwt.sing(
+      { id: usuario.id_usuario },
+      "seu_segredo",
+      { expiresIn: "1h" }
+    )
+
     res.status(200).json({
       mensagem: "Login seguro realizado!",
+      token,
       usuario: {
         id: usuario.id_usuario,
         nome: usuario.nome,
@@ -80,3 +88,75 @@ exports.loginUser = (req, res) => {
     });
   });
 };
+
+
+
+
+exports.updatePerfil = (req, res) => {
+  const id_usuario = req.user.id; // vem do token
+
+  const {
+    nome,
+    email,
+    rua,
+    cidade,
+    estado,
+    bairro,
+    numero,
+    cep
+  } = req.body;
+
+  // Atualiza usuario
+  const sqlUsuario = `
+    UPDATE usuarios
+    SET nome = ?, email = ?
+    WHERE id_usuario = ?
+    `;
+
+  connection.query(sqlUsuario, [nome, email, id_usuario], (err) => {
+    if (err) {
+      console.log(err)
+      return res.status(500).json({ erro: "Erro ao atualizar usuário!" });
+    }
+
+    //Atualiza endereco
+    const sqlEndereco = `
+    UPDATE enderecos
+    SET rua = ?, cidade = ?, estado = ?, bairro = ?, numero = ?, cep = ?
+    WHERE id_usuario = ?
+    `;
+
+    connection.query(sqlEndereco, [rua, cidade, estado, bairro, numero, cep, id_usuario],
+      (err, result) => {
+        if (err) {
+          console.log(err)
+          return res.status(500).json({ erro: "Erro ao cadastrar endereço" })
+
+        }
+
+        // Se não exitir endereço ainda
+        if (result.affectedRows === 0) {
+          const insertEndereco = `
+            INSERT INTO enderecos
+            (id_usuario, rua, cidade, estado, bairro, numero, cep)
+            VALUES (?, ?, ?, ?, ?, ?, ?)
+            `;
+
+          connection.query(
+            insertEndereco, [id_usuario, rua, cidade, estado, bairro, numero, cep],
+            (err) => {
+              if (err) {
+                console.log(err)
+                return res.status(500).json({ erro: "Erro ao inserir endereço" });
+              }
+
+              return res.json({ mensagem: "Perfil atualizado com sucesso!" })
+            }
+          );
+        } else {
+          return res.json({ mensagem: "Perfil atualizado com sucesso!" })
+        }
+      }
+    )
+  })
+}

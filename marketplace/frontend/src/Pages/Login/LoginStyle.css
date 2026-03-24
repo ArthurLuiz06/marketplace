@@ -1,0 +1,119 @@
+/* Container */
+.login-container {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: #0f172a;
+  padding: 20px;
+  font-family: 'Inter', sans-serif;
+}
+
+/* Card */
+.login-box {
+  width: 100%;
+  max-width: 400px;
+  padding: 36px;
+  background: #111827;
+  border-radius: 14px;
+  border: 1px solid #1f2937;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+  color: #e5e7eb;
+}
+
+/* Título */
+.login-box h2 {
+  font-size: 22px;
+  margin-bottom: 24px;
+  text-align: center;
+}
+
+/* Inputs */
+.login-box input {
+  width: 100%;
+  height: 44px;
+  padding: 0 12px;
+  margin-top: 12px;
+  border-radius: 8px;
+  border: 1px solid #1f2937;
+  background: #020617;
+  color: #e5e7eb;
+  font-size: 14px;
+  transition: 0.2s;
+}
+
+/* Focus */
+.login-box input:focus {
+  border: 1px solid #3b82f6;
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
+  outline: none;
+}
+
+/* Botão */
+.login-box button {
+  width: 100%;
+  height: 44px;
+  margin-top: 20px;
+  border-radius: 8px;
+  border: none;
+  background: #2563eb;
+  color: white;
+  font-weight: 500;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+/* Hover */
+.login-box button:hover {
+  background: #1d4ed8;
+}
+
+/* Link cadastro */
+.login-box p {
+  margin-top: 16px;
+  font-size: 14px;
+  color: #9ca3af;
+  text-align: center;
+}
+
+.login-box span {
+  color: #3b82f6;
+  cursor: pointer;
+}
+
+.login-box span:hover {
+  text-decoration: underline;
+}
+
+/* Entrada */
+.fade-in {
+  animation: fadeIn 0.3s ease;
+}
+
+/* Saída */
+.fade-out {
+  animation: fadeOut 0.3s ease forwards;
+}
+
+/* Keyframes */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes fadeOut {
+  from {
+    opacity: 1;
+    transform: translateX(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateX(20px);
+  }
+}

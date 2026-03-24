@@ -1,9 +1,13 @@
 import { useState } from "react";
 import {useNavigate} from "react-router-dom"
+import "./CadastroStyle.css"
 
 function CadastroUsuario() {
 
   const navigate = useNavigate("")
+
+  //Direção do cadastro
+  const [direcao, setDirecao] = useState("direita")
 
   //Controle de etapa
   const [etapa, setEtapa] = useState(1)
@@ -54,11 +58,12 @@ function CadastroUsuario() {
     } else {
       setErroSenha("")
     }
-
+    setDirecao("direita")
     setEtapa(2)
   }
 
   function voltar() {
+    setDirecao("esquerda")
     setEtapa(1);
   }
 
@@ -121,7 +126,7 @@ function CadastroUsuario() {
 
         {/* ETAPA 1 */}
         {etapa === 1 && (
-          <div className="step1">
+          <div className={`step1 ${direcao}`}>
             <input
               type="text"
               placeholder="Digite seu nome"
@@ -147,8 +152,8 @@ function CadastroUsuario() {
             />
             {erroSenha && <span className="erro">{erroSenha}</span>}
 
-            <div>
-              <button type="button" onClick={() => navigate("/")}>Login</button>
+            <div className="button-group">
+              <button type="button" onClick={() => navigate("/login")}>Login</button>
             <button type="button" onClick={proximo}>
               Próximo →
             </button>
@@ -158,7 +163,7 @@ function CadastroUsuario() {
 
         {/* ETAPA 2 */}
         {etapa === 2 && (
-          <div className="step2">
+          <div className={`step2 ${direcao}`}>
             <label>Endereço</label>
             <input
               type="text"
@@ -195,7 +200,7 @@ function CadastroUsuario() {
 
             <label>CEP</label>
             <input
-              type="number"
+              type="text"
               placeholder="Ex: 00000-000"
               value={cep}
               onChange={(e) => setCep(e.target.value)}

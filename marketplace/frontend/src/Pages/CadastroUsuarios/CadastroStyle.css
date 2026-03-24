@@ -1,0 +1,155 @@
+/* Reset básico */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* Container */
+.container {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: #0f172a;
+  padding: 20px;
+  font-family: 'Inter', sans-serif;
+}
+
+/* Card */
+.cadastro-box {
+  width: 100%;
+  max-width: 420px; /* 🔥 melhora responsividade */
+  padding: 36px;
+  background: #111827;
+  border-radius: 14px;
+  border: 1px solid #1f2937;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+  color: #e5e7eb;
+}
+
+/* Título */
+.cadastro-box h2 {
+  font-size: 22px;
+  margin-bottom: 24px;
+  text-align: center;
+}
+
+/* Inputs maiores e proporcionais */
+.cadastro-box input {
+  width: 100%;
+  height: 44px; /* 🔥 altura padrão profissional */
+  padding: 0 12px;
+  margin-top: 12px;
+  border-radius: 8px;
+  border: 1px solid #1f2937;
+  background: #020617;
+  color: #e5e7eb;
+  font-size: 14px;
+  transition: 0.2s;
+}
+
+/* Focus */
+.cadastro-box input:focus {
+  border: 1px solid #3b82f6;
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
+  outline: none;
+}
+
+/* Labels */
+.cadastro-box label {
+  display: block;
+  margin-top: 14px;
+  font-size: 13px;
+  color: #9ca3af;
+}
+
+/* Botões */
+.cadastro-box button {
+  flex: 1;
+  height: 42px;
+  margin-top: 18px;
+  border-radius: 8px;
+  border: none;
+  background: #2563eb;
+  color: white;
+  font-weight: 500;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+/* Hover */
+.cadastro-box button:hover {
+  background: #1d4ed8;
+}
+
+/* Container de botões (corrigido) */
+.button-group {
+  display: flex;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+/* Erro */
+.erro {
+  font-size: 12px;
+  color: #f87171;
+  margin-top: 4px;
+}
+
+/* 🔥 Corrige estrutura interna */
+.step1, .step2 {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+/* ✨ Animação suave */
+.step1, .step2 {
+  opacity: 0;
+  animation-duration: 0.35s;
+  animation-fill-mode: forwards;
+}
+
+.direita {
+  animation-name: slideRight;
+}
+
+.esquerda {
+  animation-name: slideLeft;
+}
+
+@keyframes slideRight {
+  from {
+    opacity: 0;
+    transform: translateX(25px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes slideLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-25px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* Corrige autofill do Chrome */
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus {
+  -webkit-text-fill-color: #e5e7eb !important;
+  -webkit-box-shadow: 0 0 0px 1000px #020617 inset !important;
+  transition: background-color 5000s ease-in-out 0s;
+}
+
+input:-webkit-autofill {
+  border: 1px solid #3b82f6;
+}
