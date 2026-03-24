@@ -1,4 +1,3 @@
-const { Connection } = require("mysql2");
 const connection = require("../database/connection")
 const bcrypt = require("bcrypt")
 
