@@ -1,6 +1,8 @@
 import { useState } from "react";
-import {useNavigate} from "react-router-dom"
+import { useNavigate } from "react-router-dom"
 import "./CadastroStyle.css"
+import { Eye, EyeOff } from "lucide-react";
+
 
 function CadastroUsuario() {
 
@@ -11,6 +13,9 @@ function CadastroUsuario() {
 
   //Controle de etapa
   const [etapa, setEtapa] = useState(1)
+
+  //Ocutar senha
+  const [mostrarSenhaAtual, setMostrarSenhaAtual] = useState(false);
 
   //Dados dos usuarios
   const [nome, setNome] = useState("")
@@ -51,8 +56,8 @@ function CadastroUsuario() {
       setErroEmail("")
     }
 
-    if (senha.length < 4) {
-      setErroSenha('Mínimo de 4 caracteres!')
+    if (senha.length < 6) {
+      setErroSenha('Mínimo de 6 caracteres!')
       valido = false
       return;
     } else {
@@ -119,7 +124,7 @@ function CadastroUsuario() {
   return (
     <div className="container">
       <header>
-        <title>CADASTRO</title>
+        <title>Cadastro</title>
       </header>
       <form className="cadastro-box" onSubmit={entrar} >
         <h2>CADASTRO</h2>
@@ -144,19 +149,37 @@ function CadastroUsuario() {
             {erroEmail && <span className="erro">{erroEmail}</span>}
 
 
-            <input
-              type="password"
-              placeholder="Digite sua senha"
-              value={senha}
-              onChange={(e) => setSenha(e.target.value)}
-            />
+
+            <div style={{ position: "relative" }}>
+              <input
+                type={mostrarSenhaAtual ? "text" : "password"}
+                placeholder="Digite sua senha"
+                value={senha}
+                onChange={(e) => setSenha(e.target.value)}
+              />
+
+              <span
+                onClick={() => setMostrarSenhaAtual(!mostrarSenhaAtual)}
+                style={{
+                  position: "absolute",
+                  right: "10px",
+                  top: "60%",
+                  transform: "translateY(-50%)",
+                  cursor: "pointer",
+                  color: "#aaa"
+
+                }}
+              >
+                {mostrarSenhaAtual ? <EyeOff size={20} /> : <Eye size={20} />}
+              </span>
+            </div>
             {erroSenha && <span className="erro">{erroSenha}</span>}
 
             <div className="button-group">
               <button type="button" onClick={() => navigate("/login")}>Login</button>
-            <button type="button" onClick={proximo}>
-              Próximo →
-            </button>
+              <button type="button" onClick={proximo}>
+                Próximo →
+              </button>
             </div>
           </div>
         )}

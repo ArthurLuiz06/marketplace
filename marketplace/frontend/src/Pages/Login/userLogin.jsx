@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom'
 import "./LoginStyle.css"
+import { Eye, EyeOff } from "lucide-react";
+
 
 function UserLogin() {
 
@@ -8,6 +10,10 @@ function UserLogin() {
   const [senha, setSenha] = useState("");
 
   const [saindo, setSaindo] = useState(false)
+
+  //Ocutar senha
+  const [mostrarSenhaAtual, setMostrarSenhaAtual] = useState(false);
+
 
 
   const navigate = useNavigate()
@@ -62,37 +68,56 @@ function UserLogin() {
       })
   }
 
- return (
-  <div className={`login-container ${saindo ? "fade-out" : "fade-in"}`}>
-    <form className="login-box" onSubmit={entrar}>
-      <h2>LOGIN</h2>
+  return (
+    <div className={`login-container ${saindo ? "fade-out" : "fade-in"}`}>
+      <header>
+        <title>Login</title>
+      </header>
+      <form className="login-box" onSubmit={entrar}>
+        <h2>LOGIN</h2>
 
-      <input
-        type="email"
-        placeholder="Email"
-        value={email}
-        onChange={(e) => setEmail(e.target.value)}
-      />
+        <input
+          type="email"
+          placeholder="Email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+        />
 
-      <input
-        type="password"
-        placeholder="Senha"
-        value={senha}
-        onChange={(e) => setSenha(e.target.value)}
-      />
+        <div style={{ position: "relative" }}>
+          <input
+            type={mostrarSenhaAtual ? "text" : "password"}
+            placeholder="Digite sua senha"
+            value={senha}
+            onChange={(e) => setSenha(e.target.value)}
+          />
 
-      <button type="submit">Entrar</button>
+          <span
+            onClick={() => setMostrarSenhaAtual(!mostrarSenhaAtual)}
+            style={{
+              position: "absolute",
+              right: "10px",
+              top: "60%",
+              transform: "translateY(-50%)",
+              cursor: "pointer",
+              color: "#aaa"
+            }}
+          >
+            {mostrarSenhaAtual ? <EyeOff size={20} /> : <Eye size={20} />}
+          </span>
+        </div>
 
-      <p>
-        Não tem conta?{" "}
-        <span onClick= {() => navigate("/cadastro")}
-        >
-          Cadastre-se
-        </span>
-      </p>
-    </form>
-  </div>
-);
+        <button type="submit">Entrar</button>
+
+        <p>
+          Não tem conta?{" "}
+          <span onClick={() => navigate("/cadastro")}
+          >
+            Cadastre-se
+          </span>
+        </p>
+      </form>
+    </div>
+  );
 
 }
 

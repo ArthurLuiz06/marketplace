@@ -1,11 +1,22 @@
 import { useState, useEffect } from "react";
 import "./PerfilStyle.css";
 import { useNavigate } from "react-router-dom";
+import { Eye, EyeOff } from "lucide-react";
 
 function Perfil() {
   const [user, setUser] = useState(null);
-  const [editando, setEditando] = useState(false)
+  const [editando, setEditando] = useState(false);
 
+
+  //Ocutar senha
+  const [mostrarSenhaAtual, setMostrarSenhaAtual] = useState(false);
+  const [mostrarNovaSenha, setMostrarNovaSenha] = useState(false);
+
+  // Mudar senha
+  const [senhaAtual, setSenhaAtual] = useState("");
+  const [novaSenha, setNovaSenha] = useState("");
+
+  //Mudar informações de usuario
   const [nome, setNome] = useState("");
   const [email, setEmail] = useState("");
   const [rua, setRua] = useState("");
@@ -20,6 +31,47 @@ function Perfil() {
   function salvar() {
     const token = localStorage.getItem("token");
 
+    // VALIDAÇÃO DE SENHA
+    if (novaSenha && novaSenha.length < 6) {
+      alert("Nova senha deve ter no mínimo 6 caracteres");
+      return;
+    }
+
+    //  SE QUISER TROCAR SENHA
+    if (senhaAtual && novaSenha) {
+      fetch("http://localhost:3001/perfil/senha", {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`
+        },
+        body: JSON.stringify({
+          senhaAtual,
+          novaSenha
+        })
+      })
+        .then(res => res.json())
+        .then(data => {
+          if (data.erro) {
+            alert(data.erro);
+            return;
+          }
+
+          alert("Senha atualizada! Faça login novamente.");
+
+          //  LOGOUT POR SEGURANÇA
+          localStorage.removeItem("token");
+          navigate("/login");
+        })
+        .catch(err => {
+          console.log(err);
+          alert("Erro ao atualizar senha");
+        });
+
+      return; //  evita continuar para update normal
+    }
+
+    //  ATUALIZA PERFIL NORMAL
     fetch("http://localhost:3001/perfil", {
       method: "PUT",
       headers: {
@@ -66,12 +118,10 @@ function Perfil() {
         return res.json();
       })
       .then(data => {
-        setUser(data.user)
+        setUser(data.user);
 
         setNome(data.user.nome || "");
         setEmail(data.user.email || "");
-
-        // preparado mesmo que backend ainda não envie
         setRua(data.user.rua || "");
         setCidade(data.user.cidade || "");
         setEstado(data.user.estado || "");
@@ -107,6 +157,54 @@ function Perfil() {
             disabled={!editando}
             onChange={(e) => setEmail(e.target.value)}
           />
+
+          <label>Senha Atual</label>
+          <div style={{ position: "relative" }}>
+            <input
+              type={mostrarSenhaAtual ? "text" : "password"}
+              value={senhaAtual}
+              disabled={!editando}
+              onChange={(e) => setSenhaAtual(e.target.value)}
+            />
+
+            <span
+              onClick={() => setMostrarSenhaAtual(!mostrarSenhaAtual)}
+              style={{
+                position: "absolute",
+                right: "10px",
+                top: "60%",
+                transform: "translateY(-50%)",
+                cursor: "pointer",
+                color: "#aaa"
+              }}
+            >
+              {mostrarSenhaAtual ? <EyeOff size={20} /> : <Eye size={20} />}
+            </span>
+          </div>
+
+          <label>Nova Senha</label>
+          <div style={{ position: "relative" }}>
+            <input
+              type={mostrarNovaSenha ? "text" : "password"}
+              value={novaSenha}
+              disabled={!editando}
+              onChange={(e) => setNovaSenha(e.target.value)}
+            />
+
+            <span
+              onClick={() => setMostrarNovaSenha(!mostrarNovaSenha)}
+              style={{
+                position: "absolute",
+                right: "10px",
+                top: "60%",
+                transform: "translateY(-50%)",
+                cursor: "pointer",
+                color: "#aaa"
+              }}
+            >
+              {mostrarSenhaAtual ? <EyeOff size={20} /> : <Eye size={20} />}
+            </span>
+          </div>
 
           <label>Rua</label>
           <input
@@ -166,4 +264,4 @@ function Perfil() {
   );
 }
 
-export default Perfil
+export default Perfil;

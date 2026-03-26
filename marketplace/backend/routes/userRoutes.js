@@ -10,4 +10,6 @@ router.post("/login", userController.loginUser)
 router.put("/perfil", authMiddleware,userController.updatePerfil)
 router.get("/perfil", authMiddleware, userController.getPerfil);
 
+router.put("/perfil/senha", authMiddleware,userController.updateSenha)
+
 module.exports = router;

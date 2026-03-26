@@ -1,35 +1,84 @@
-import { useLocation, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import "./HomeStyle.css";
+import { Zap, ShieldCheck, Truck } from "lucide-react";
+import logo from "../../IMG/logo.png"
 
 function Home() {
   const navigate = useNavigate();
 
-  const location = useLocation()
-  const nome = location.state?.nome || "Usuario";
-  const nomeLoja = "ByteShop"
+  const nomeLoja = "ByteShop";
+  const token = localStorage.getItem("token");
 
   return (
-    <div>
-      <header>
-        <title>ByteShop</title>
-      </header>
-      <h1>Bem-vindo, {nome} 👋</h1>
-      <h2>à {nomeLoja}</h2>
+    <div className="home-container">
 
-      <button onClick={() => navigate("/login")}>
-        Login
-      </button>
+      {/* NAVBAR */}
+      <div className="navbar">
+        <img src={logo} alt="ByteShop Logo" className="logo-img" />
+        <div className="nav-buttons">
+          {!token ? (
+            <button onClick={() => navigate("/login")}>
+              Login
+            </button>
+          ) : (
+            <button onClick={() => navigate("/perfil")}>
+              Meu Perfil
+            </button>
+          )}
+        </div>
+      </div>
 
-      <button onClick={() => navigate("/perfil")}>
-        Meu Perfil
-      </button>
+      {/* HERO */}
+      <div className="hero">
+        <h1>Bem-vindo</h1>
+        <h2>à {nomeLoja}</h2>
 
-      <button onClick={() => navigate("/produtos")}>
-        Ver Produtos
-      </button>
+        <p>
+          A melhor loja de peças eletrônicas.
+          Performance, qualidade e tecnologia em um só lugar.
+        </p>
 
-      <button onClick={() => navigate("/vendedor")}>
-        Quero ser vendedor
-      </button>
+        <div className="hero-buttons">
+          <button
+            className="btn-primary"
+            onClick={() => navigate("/produtos")}
+          >
+            Ver Produtos
+          </button>
+
+          <button
+            className="btn-outline"
+            onClick={() => navigate("/vendedor")}
+          >
+            Quero ser vendedor
+          </button>
+        </div>
+      </div>
+
+      {/* DESTAQUE */}
+      <section className="destaque">
+        <h2>Por que escolher a ByteShop?</h2>
+
+        <div className="cards">
+          <div className="card">
+            <Zap size={28} className="icon" />
+            <h3> Alta Performance</h3>
+            <p>Peças selecionadas para máximo desempenho.</p>
+          </div>
+
+          <div className="card">
+            <ShieldCheck size={28} className="icon" />
+            <h3>Garantia</h3>
+            <p>Produtos confiáveis com garantia real.</p>
+          </div>
+
+          <div className="card">
+            <Truck size={28} className="icon" />
+            <h3>Entrega Rápida</h3>
+            <p>Receba seus produtos com agilidade.</p>
+          </div>
+        </div>
+      </section>
 
     </div>
   );

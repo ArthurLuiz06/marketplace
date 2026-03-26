@@ -189,3 +189,47 @@ exports.getPerfil = (req, res) =>  {
     });
 }
 
+
+
+exports.updateSenha = (req, res) => {
+   const userId = req.user.id
+
+   const {senhaAtual, novaSenha} = req.body;
+
+   const sql = "SELECT senha FROM usuarios WHERE id_usuario = ?";
+
+   connection.query(sql, [userId], async (err, result) => {
+    if(err) {
+      console.log(err)
+      return res.status(500).json({error: "Erro no servidor"})
+    }
+
+    if(result.length === 0) {
+      return res.status(404).json({error: "Usuario não encontrado"})
+    }
+
+    const senhaHash = result[0].senha
+
+    // Valida senha atual
+    const senhaValida = await bcrypt.compare(senhaAtual, senhaHash);
+
+    if(!senhaValida) {
+      return res.status(401).json({erro: "Senha atual incorreta"})
+    }
+
+    // Criptografa nova senha
+    const novaSenhaHash = await bcrypt.hash(novaSenha, 10)
+
+    const updateSql = "UPDATE usuarios SET senha = ? WHERE id_usuario = ?"
+
+    connection.query(updateSql, [novaSenhaHash, userId], (err) => {
+      if(err) {
+        console.log(err)
+        return res.status(500).json({erro: "Erro ao atualizar senha"})
+      }
+
+      return res.json({mensagem: "Senha atualizada com sucesso"})
+    })
+   })
+}
+
