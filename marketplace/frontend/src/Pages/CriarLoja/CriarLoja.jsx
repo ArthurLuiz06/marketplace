@@ -74,7 +74,7 @@ function CriarLoja() {
         const token = localStorage.getItem("token");
 
         try {
-            const res = await fetch("http://localhost:3000/lojas", {
+            const res = await fetch("http://localhost:3001/loja", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",

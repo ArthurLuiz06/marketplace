@@ -9,7 +9,8 @@ const authMiddleware = require("../middleware/auth")
 router.post("/cadastro", userController.createUser);
 router.post("/login", userController.loginUser)
 
-router.post("/loja", authMiddleware, criarLojaController.criarLoja)
+router.post("/loja", authMiddleware, criarLojaController.createLoja)
+router.post("/minha-loja", authMiddleware, criarLojaController.getMinhaLoja)
 
 // Consutar perfil
 router.put("/perfil", authMiddleware,userController.updatePerfil)

@@ -14,7 +14,7 @@ function AppRoutes() {
         <Route path="/cadastro" element={<Cadastro />} />
         <Route path="/" element={<Home />}></Route>
         <Route path="/perfil" element={<Perfil />}></Route>
-        <Route path="/criar_loja" element={<CriarLoja />}></Route>
+        <Route path="/loja" element={<CriarLoja />}></Route>
       </Routes>
     </BrowserRouter>
   );

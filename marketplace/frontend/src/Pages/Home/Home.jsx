@@ -12,9 +12,9 @@ function Home() {
   //  NOVA FUNÇÃO (fluxo vendedor)
   const handleVendedor = () => {
     if (!token) {
-      navigate("/login", { state: { redirect: "/criar-loja" } });
+      navigate("/login", { state: { redirect: "/loja" } });
     } else {
-      navigate("/criar-loja");
+      navigate("/loja");
     }
   };
 
