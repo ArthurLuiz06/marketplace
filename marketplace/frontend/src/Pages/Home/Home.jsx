@@ -1,13 +1,22 @@
 import { useNavigate } from "react-router-dom";
 import "./HomeStyle.css";
 import { Zap, ShieldCheck, Truck } from "lucide-react";
-import logo from "../../IMG/logo.png"
+import logo from "../../IMG/logo.png";
 
 function Home() {
   const navigate = useNavigate();
 
   const nomeLoja = "ByteShop";
   const token = localStorage.getItem("token");
+
+  //  NOVA FUNÇÃO (fluxo vendedor)
+  const handleVendedor = () => {
+    if (!token) {
+      navigate("/login", { state: { redirect: "/criar-loja" } });
+    } else {
+      navigate("/criar-loja");
+    }
+  };
 
   return (
     <div className="home-container">
@@ -46,9 +55,10 @@ function Home() {
             Ver Produtos
           </button>
 
+          {/*  BOTÃO ATUALIZADO */}
           <button
             className="btn-outline"
-            onClick={() => navigate("/vendedor")}
+            onClick={handleVendedor}
           >
             Quero ser vendedor
           </button>

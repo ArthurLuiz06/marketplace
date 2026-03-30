@@ -1,39 +1,50 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom'
-import "./LoginStyle.css"
+import { useNavigate, useLocation } from 'react-router-dom';
+import "./LoginStyle.css";
 import { Eye, EyeOff } from "lucide-react";
-
 
 function UserLogin() {
 
   const [email, setEmail] = useState("");
   const [senha, setSenha] = useState("");
 
-  const [saindo, setSaindo] = useState(false)
+  const [erroEmail, setErroEmail] = useState("");
+  const [erroSenha, setErroSenha] = useState("");
 
-  //Ocutar senha
+  const [loading, setLoading] = useState(false);
+  const [saindo, setSaindo] = useState(false);
+
   const [mostrarSenhaAtual, setMostrarSenhaAtual] = useState(false);
 
+  const navigate = useNavigate();
+  const location = useLocation(); 
 
-
-  const navigate = useNavigate()
-
-
-  function irParaCadastro() {
-    setSaindo(true);
-
-    setTimeout(() => {
-      navigate("/cadastro");
-    }, 300) // tempo de animação
-  }
+  // validações
+  const emailValido = email.includes("@") && email.includes(".");
+  const senhaValida = senha.length >= 6;
 
   function entrar(e) {
     e.preventDefault();
 
-    if (email === "" || senha === "") {
-      alert("Prencha todos os campos")
-      return
+    let valido = true;
+
+    if (!emailValido) {
+      setErroEmail("Digite um email válido!");
+      valido = false;
+    } else {
+      setErroEmail("");
     }
+
+    if (!senhaValida) {
+      setErroSenha("Mínimo de 6 caracteres!");
+      valido = false;
+    } else {
+      setErroSenha("");
+    }
+
+    if (!valido) return;
+
+    setLoading(true);
 
     fetch("http://localhost:3001/login", {
       method: 'POST',
@@ -48,14 +59,13 @@ function UserLogin() {
       .then(res => res.json())
       .then(data => {
         if (data.token) {
-
-          // salva token
           localStorage.setItem("token", data.token);
 
-          navigate("/", {
-            state: {
-              nome: data.usuario.nome
-            }
+          //REDIRECIONAMENTO INTELIGENTE
+          const redirect = location.state?.redirect || "/";
+
+          navigate(redirect, {
+            state: { nome: data.usuario?.nome }
           });
 
         } else {
@@ -64,27 +74,44 @@ function UserLogin() {
       })
       .catch(err => {
         console.log(err);
-        alert('Erro ao conectar com o servidor')
+        alert('Erro ao conectar com o servidor');
       })
+      .finally(() => {
+        setLoading(false);
+      });
   }
 
   return (
     <div className={`login-container ${saindo ? "fade-out" : "fade-in"}`}>
-      <header>
-        <title>Login</title>
-      </header>
       <form className="login-box" onSubmit={entrar}>
-        <h2>LOGIN</h2>
+        <h2>Login</h2>
 
+        {/* EMAIL */}
         <input
+          className={
+            erroEmail
+              ? "input-error"
+              : email
+                ? "input-success"
+                : ""
+          }
           type="email"
-          placeholder="Email"
+          placeholder="Digite seu email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
         />
+        {erroEmail && <span className="erro">{erroEmail}</span>}
 
-        <div style={{ position: "relative" }}>
+        {/* SENHA */}
+        <div className="input-password">
           <input
+            className={
+              erroSenha
+                ? "input-error"
+                : senha
+                  ? "input-success"
+                  : ""
+            }
             type={mostrarSenhaAtual ? "text" : "password"}
             placeholder="Digite sua senha"
             value={senha}
@@ -93,32 +120,26 @@ function UserLogin() {
 
           <span
             onClick={() => setMostrarSenhaAtual(!mostrarSenhaAtual)}
-            style={{
-              position: "absolute",
-              right: "10px",
-              top: "60%",
-              transform: "translateY(-50%)",
-              cursor: "pointer",
-              color: "#aaa"
-            }}
+            className="eye-icon"
           >
             {mostrarSenhaAtual ? <EyeOff size={20} /> : <Eye size={20} />}
           </span>
         </div>
+        {erroSenha && <span className="erro">{erroSenha}</span>}
 
-        <button type="submit">Entrar</button>
+        <button type="submit" disabled={loading}>
+          {loading ? "Entrando..." : "Entrar"}
+        </button>
 
         <p>
           Não tem conta?{" "}
-          <span onClick={() => navigate("/cadastro")}
-          >
+          <span onClick={() => navigate("/cadastro", { state: location.state })}>
             Cadastre-se
           </span>
         </p>
       </form>
     </div>
   );
-
 }
 
-export default UserLogin
+export default UserLogin;

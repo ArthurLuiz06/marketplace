@@ -142,3 +142,56 @@
     transform: translateY(20px);
   }
 }
+
+/* ERRO */
+.erro {
+  font-size: 12px;
+  color: #f87171;
+  margin-top: 5px;
+}
+
+/* INPUT STATES */
+.input-error {
+  border: 1px solid #ef4444 !important;
+  box-shadow: 0 0 0 2px rgba(239, 68, 68, 0.2);
+}
+
+.input-success {
+  border: 1px solid #22c55e !important;
+  box-shadow: 0 0 0 2px rgba(34, 197, 94, 0.2);
+}
+
+/* PASSWORD */
+.input-password {
+  position: relative;
+}
+
+.eye-icon {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  height: 100%;
+  cursor: pointer;
+  color: #94a3b8;
+  transition: 0.2s;
+}
+
+.eye-icon:hover {
+  color: white;
+}
+
+.input-password input {
+  padding-right: 40px;
+}
+
+/* BOTÃO DESABILITADO */
+button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}

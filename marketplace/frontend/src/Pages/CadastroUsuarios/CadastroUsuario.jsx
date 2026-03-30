@@ -1,91 +1,85 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom"
-import "./CadastroStyle.css"
+import { useNavigate } from "react-router-dom";
+import "./CadastroStyle.css";
 import { Eye, EyeOff } from "lucide-react";
 
-
 function CadastroUsuario() {
+  const navigate = useNavigate();
 
-  const navigate = useNavigate("")
+  // direção animação
+  const [direcao, setDirecao] = useState("direita");
 
-  //Direção do cadastro
-  const [direcao, setDirecao] = useState("direita")
+  // etapa
+  const [etapa, setEtapa] = useState(1);
 
-  //Controle de etapa
-  const [etapa, setEtapa] = useState(1)
+  // loading
+  const [loading, setLoading] = useState(false);
 
-  //Ocutar senha
+  // senha
   const [mostrarSenhaAtual, setMostrarSenhaAtual] = useState(false);
 
-  //Dados dos usuarios
-  const [nome, setNome] = useState("")
-  const [email, setEmail] = useState("")
+  // dados usuário
+  const [nome, setNome] = useState("");
+  const [email, setEmail] = useState("");
   const [senha, setSenha] = useState("");
 
-  //Dados de endereço
-  const [rua, setRua] = useState("")
-  const [cidade, setCidade] = useState("")
-  const [estado, setEstado] = useState("")
+  // endereço
+  const [rua, setRua] = useState("");
+  const [cidade, setCidade] = useState("");
+  const [estado, setEstado] = useState("");
   const [bairro, setBairro] = useState("");
   const [numero, setNumero] = useState("");
   const [cep, setCep] = useState("");
 
+  // erros
+  const [erroNome, setErroNome] = useState("");
+  const [erroEmail, setErroEmail] = useState("");
+  const [erroSenha, setErroSenha] = useState("");
 
-  // Estado de erro
-  const [erroNome, setErroNome] = useState("")
-  const [erroEmail, setErroEmail] = useState("")
-  const [erroSenha, setErroSenha] = useState("")
-
+  // validações visuais
+  const nomeValido = nome.length >= 3;
+  const emailValido = email.includes("@") && email.includes(".");
+  const senhaValida = senha.length >= 6;
 
   function proximo() {
-    let valido = true
-
-    if (nome === "") {
-      setErroNome('Digite seu nome')
-      valido = false
+    if (!nomeValido) {
+      setErroNome("Digite um nome válido!");
       return;
-    } else {
-      setErroNome("")
-    }
+    } else setErroNome("");
 
-    if (!email.includes("@") || !email.includes(".")) {
-      setErroEmail('Digite um email válido!');
-      valido = false
+    if (!emailValido) {
+      setErroEmail("Digite um email válido!");
       return;
-    } else {
-      setErroEmail("")
-    }
+    } else setErroEmail("");
 
-    if (senha.length < 6) {
-      setErroSenha('Mínimo de 6 caracteres!')
-      valido = false
+    if (!senhaValida) {
+      setErroSenha("Mínimo de 6 caracteres!");
       return;
-    } else {
-      setErroSenha("")
-    }
-    setDirecao("direita")
-    setEtapa(2)
+    } else setErroSenha("");
+
+    setDirecao("direita");
+    setEtapa(2);
   }
 
   function voltar() {
-    setDirecao("esquerda")
+    setDirecao("esquerda");
     setEtapa(1);
   }
-
 
   function entrar(e) {
     e.preventDefault();
 
-    if (rua === "" || cidade === "" || estado === "" || bairro === "" || cep === "" || numero === "") {
-      alert('Preencha todos os campos!');
+    if (!rua || !cidade || !estado || !bairro || !cep || !numero) {
+      alert("Preencha todos os campos!");
       return;
     }
 
-    //Conexão com o Back-End
+    setLoading(true);
+
     fetch("http://localhost:3001/cadastro", {
-      method: 'POST',
+      method: "POST",
       headers: {
-        "Content-Type": "application/json"
+        "Content-Type": "application/json",
       },
       body: JSON.stringify({
         nome,
@@ -96,14 +90,15 @@ function CadastroUsuario() {
         cidade,
         estado,
         bairro,
-        cep
-      })
+        cep,
+      }),
     })
-      .then(res => res.text())
-      .then(data => {
+      .then((res) => res.text())
+      .then((data) => {
         alert(data);
-        navigate("/")
+        navigate("/");
 
+        // reset
         setNome("");
         setEmail("");
         setSenha("");
@@ -114,25 +109,37 @@ function CadastroUsuario() {
         setCep("");
         setEtapa(1);
       })
-      .catch(err => {
+      .catch((err) => {
         console.error(err);
         alert("Erro ao conectar com o servidor");
       })
-
+      .finally(() => {
+        setLoading(false);
+      });
   }
 
   return (
     <div className="container">
-      <header>
-        <title>Cadastro</title>
-      </header>
-      <form className="cadastro-box" onSubmit={entrar} >
-        <h2>CADASTRO</h2>
+      <form className="cadastro-box" onSubmit={entrar}>
+        <h2>Cadastro</h2>
+
+        {/* PROGRESS BAR */}
+        <div className="progress-bar">
+          <div className="progress"
+            style={{ width: etapa === 1 ? "50%" : "100%" }} />
+        </div>
 
         {/* ETAPA 1 */}
         {etapa === 1 && (
           <div className={`step1 ${direcao}`}>
             <input
+              className={
+                erroNome
+                  ? "input-error"
+                  : nome
+                    ? "input-success"
+                    : ""
+              }
               type="text"
               placeholder="Digite seu nome"
               value={nome}
@@ -141,6 +148,13 @@ function CadastroUsuario() {
             {erroNome && <span className="erro">{erroNome}</span>}
 
             <input
+              className={
+                erroEmail
+                  ? "input-error"
+                  : email
+                    ? "input-success"
+                    : ""
+              }
               type="email"
               placeholder="Digite seu email"
               value={email}
@@ -148,35 +162,47 @@ function CadastroUsuario() {
             />
             {erroEmail && <span className="erro">{erroEmail}</span>}
 
-
-
-            <div style={{ position: "relative" }}>
+            {/* SENHA */}
+            <div className="input-password">
               <input
+                className={
+                  erroSenha
+                    ? "input-error"
+                    : senha
+                      ? "input-success"
+                      : ""
+                }
                 type={mostrarSenhaAtual ? "text" : "password"}
                 placeholder="Digite sua senha"
                 value={senha}
                 onChange={(e) => setSenha(e.target.value)}
+
+
               />
 
               <span
-                onClick={() => setMostrarSenhaAtual(!mostrarSenhaAtual)}
-                style={{
-                  position: "absolute",
-                  right: "10px",
-                  top: "60%",
-                  transform: "translateY(-50%)",
-                  cursor: "pointer",
-                  color: "#aaa"
-
-                }}
+                onClick={() =>
+                  setMostrarSenhaAtual(!mostrarSenhaAtual)
+                }
+                className="eye-icon"
               >
-                {mostrarSenhaAtual ? <EyeOff size={20} /> : <Eye size={20} />}
+                {mostrarSenhaAtual ? (
+                  <EyeOff size={20} />
+                ) : (
+                  <Eye size={20} />
+                )}
               </span>
             </div>
             {erroSenha && <span className="erro">{erroSenha}</span>}
 
             <div className="button-group">
-              <button type="button" onClick={() => navigate("/login")}>Login</button>
+              <button
+                type="button"
+                onClick={() => navigate("/login")}
+              >
+                Login
+              </button>
+
               <button type="button" onClick={proximo}>
                 Próximo →
               </button>
@@ -187,7 +213,6 @@ function CadastroUsuario() {
         {/* ETAPA 2 */}
         {etapa === 2 && (
           <div className={`step2 ${direcao}`}>
-            <label>Endereço</label>
             <input
               type="text"
               placeholder="Rua"
@@ -195,7 +220,6 @@ function CadastroUsuario() {
               onChange={(e) => setRua(e.target.value)}
             />
 
-            <label>Cidade</label>
             <input
               type="text"
               placeholder="Cidade"
@@ -203,56 +227,48 @@ function CadastroUsuario() {
               onChange={(e) => setCidade(e.target.value)}
             />
 
-            <label>Estado</label>
             <input
               type="text"
-              placeholder="Ex: AL"
-              minLength={2}
+              placeholder="Estado (ex: AL)"
               value={estado}
               onChange={(e) => setEstado(e.target.value)}
             />
 
-
-            <label>Logradouro</label>
             <input
               type="text"
-              placeholder="Ex: Centro"
+              placeholder="Bairro"
               value={bairro}
               onChange={(e) => setBairro(e.target.value)}
             />
 
-            <label>CEP</label>
             <input
               type="text"
-              placeholder="Ex: 00000-000"
+              placeholder="CEP"
               value={cep}
               onChange={(e) => setCep(e.target.value)}
             />
 
-            <label>Numero</label>
             <input
               type="text"
-              placeholder="Ex: 00"
+              placeholder="Número"
               value={numero}
               onChange={(e) => setNumero(e.target.value)}
             />
 
-            <div style={{ display: "flex", gap: "10px" }}>
+            <div className="button-group">
               <button type="button" onClick={voltar}>
                 ← Voltar
               </button>
 
-              <button type="submit">
-                Cadastrar
+              <button type="submit" disabled={loading}>
+                {loading ? "Cadastrando..." : "Cadastrar"}
               </button>
             </div>
           </div>
         )}
-
       </form>
     </div>
   );
 }
 
-
-export default CadastroUsuario
+export default CadastroUsuario;
