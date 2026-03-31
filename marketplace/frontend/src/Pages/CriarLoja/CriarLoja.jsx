@@ -27,7 +27,7 @@ function CriarLoja() {
         setErros({ ...erros, [e.target.name]: "" });
     };
 
-    // 🔥 VALIDAÇÃO POR ETAPA
+    //  VALIDAÇÃO POR ETAPA
     const validarEtapa1 = () => {
         let novosErros = {};
 

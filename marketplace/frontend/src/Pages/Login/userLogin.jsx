@@ -61,12 +61,14 @@ function UserLogin() {
         if (data.token) {
           localStorage.setItem("token", data.token);
 
+          localStorage.setItem("user",JSON.stringify({
+            nome: data.usuario?.nome
+          }))
+          
           //REDIRECIONAMENTO INTELIGENTE
           const redirect = location.state?.redirect || "/";
 
-          navigate(redirect, {
-            state: { nome: data.usuario?.nome }
-          });
+          navigate(redirect);
 
         } else {
           alert(data.mensagem || "Erro no login");
