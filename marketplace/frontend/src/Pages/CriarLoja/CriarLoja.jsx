@@ -83,15 +83,13 @@ function CriarLoja() {
                 body: JSON.stringify({
                     nome_loja: form.nome_loja,
                     descricao: form.descricao,
-                    endereco: {
-                        rua: form.rua,
-                        numero: form.numero,
-                        bairro: form.bairro,
-                        cidade: form.cidade,
-                        estado: form.estado,
-                        cep: form.cep,
-                    },
-                }),
+                    rua: form.rua,
+                    numero: form.numero,
+                    bairro: form.bairro,
+                    cidade: form.cidade,
+                    estado: form.estado,
+                    cep: form.cep,
+                })
             });
 
             const data = await res.json();
@@ -175,9 +173,9 @@ function CriarLoja() {
 
                             <div className="button-group">
 
-                                    <button type="button" onClick={voltar}>
-                                        Voltar
-                                    </button>
+                                <button type="button" onClick={voltar}>
+                                    Voltar
+                                </button>
 
                                 <button type="submit" disabled={loading}>
                                     {loading ? "Criando..." : "Cadastrar Loja"}

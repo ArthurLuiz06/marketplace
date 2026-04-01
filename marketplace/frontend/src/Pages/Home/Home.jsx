@@ -1,8 +1,8 @@
 import { useNavigate } from "react-router-dom";
 import "./HomeStyle.css";
-import { Zap, ShieldCheck, Truck } from "lucide-react";
+import { Zap, ShieldCheck, Truck, User, Store, LogOut } from "lucide-react";
 import logo from "../../IMG/logo.png";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 function Home() {
   const navigate = useNavigate();
@@ -11,6 +11,21 @@ function Home() {
   const [minhaLoja, setMinhaLoja] = useState(null)
 
   const user = JSON.parse(localStorage.getItem("user"))
+
+  const token = localStorage.getItem("token");
+
+  const menuRef = useRef(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (menuRef.current && !menuRef.current.contains(event.target)) {
+        setOpen(false)
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside)
+  }, [])
 
   useEffect(() => {
     if (open && token) {
@@ -33,7 +48,6 @@ function Home() {
   }, [open]);
 
   const nomeLoja = "ByteShop";
-  const token = localStorage.getItem("token");
 
   //  fluxo vendedor
   const handleVendedor = () => {
@@ -63,39 +77,43 @@ function Home() {
               Login
             </button>
           ) : (
-            <div className="user-menu">
-              <button onClick={() => setOpen(!open)}>
-                {user?.nome || "Usuário"}
+            <div className="user-menu" ref={menuRef}>
+              <button onClick={() => setOpen(!open)} className="user-button">
+                <div className="avatar">
+                  {user?.nome?.charAt(0).toUpperCase()}
+                </div>
+                {user?.nome}
               </button>
 
-              {open && (
-                <div className="dropdown-menu">
+              <div className={`dropdown-menu ${open ? "open" : ""}`}>
 
-                  <div className="user-info">
+                <div className="user-info">
+                  <div className="avatar big">
+                    {user?.nome?.charAt(0).toUpperCase()}
+                  </div>
+                  <div>
                     <strong>{user?.nome}</strong>
                     <p>Minha conta</p>
                   </div>
-
-                  <hr />
-
-                  <button onClick={() => navigate("/perfil")}>
-                    Meu perfil
-                  </button>
-
-                  {minhaLoja && (
-                    <button onClick={() => navigate("/minha-loja")}>
-                      Minha loja
-                    </button>
-                  )}
-
-                  <hr />
-
-                  <button onClick={logout}>
-                    Sair
-                  </button>
-
                 </div>
-              )}
+
+                <hr />
+
+                <button onClick={() => navigate("/perfil")}>
+                  <User size={16} /> Meu perfil
+                </button>
+
+                {minhaLoja && (
+                  <button onClick={() => navigate("/minha-loja")}>
+                    <Store size={16} /> Minha loja
+                  </button>
+                )}
+
+                <button onClick={logout} className="logout">
+                  <LogOut size={16} /> Sair
+                </button>
+
+              </div>
             </div>
           )}
         </div>

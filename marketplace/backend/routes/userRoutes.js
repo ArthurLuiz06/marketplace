@@ -10,7 +10,7 @@ router.post("/cadastro", userController.createUser);
 router.post("/login", userController.loginUser)
 
 router.post("/loja", authMiddleware, criarLojaController.createLoja)
-router.post("/minha-loja", authMiddleware, criarLojaController.getMinhaLoja)
+router.get("/minha-loja", authMiddleware, criarLojaController.getMinhaLoja)
 
 // Consutar perfil
 router.put("/perfil", authMiddleware,userController.updatePerfil)

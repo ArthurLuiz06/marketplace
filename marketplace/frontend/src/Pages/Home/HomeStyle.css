@@ -172,42 +172,152 @@
 }
 
 
+/* USER MENU */
+/* USER MENU */
 .user-menu {
   position: relative;
 }
 
-.user-menu button {
-  background: none;
-  border: none;
+/* BOTÃO */
+.user-button {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  padding: 6px 12px;
+
+  border-radius: 12px;
+  border: 1px solid rgba(249, 115, 22, 0.3);
+
+  background: rgba(17, 24, 39, 0.6);
+  backdrop-filter: blur(8px);
+
+  color: #e5e7eb;
   cursor: pointer;
-  font-weight: bold;
+  transition: 0.3s;
 }
 
+.user-button:hover {
+  border-color: #f97316;
+  box-shadow: 0 0 12px rgba(249, 115, 22, 0.4);
+}
+
+/* AVATAR */
+.avatar {
+  width: 28px;
+  height: 28px;
+
+  border-radius: 50%;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background: linear-gradient(135deg, #3b82f6, #9333ea);
+  color: white;
+  font-weight: bold;
+  font-size: 13px;
+}
+
+.avatar.big {
+  width: 40px;
+  height: 40px;
+  font-size: 16px;
+}
+
+/* DROPDOWN */
 .dropdown-menu {
   position: absolute;
-  top: 50px;
+  top: 120%;
   right: 0;
-  width: 220px;
-  background: white;
-  border-radius: 10px;
-  box-shadow: 0 10px 25px rgba(0,0,0,0.15);
-  padding: 10px;
+
+  width: 240px;
+  padding: 15px;
+
+  border-radius: 14px;
+
+  background: rgba(17, 24, 39, 0.75);
+  backdrop-filter: blur(14px);
+
+  border: 1px solid rgba(59, 130, 246, 0.2);
+
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
+
+  opacity: 0;
+  transform: translateY(-10px);
+  pointer-events: none;
+
+  transition: all 0.25s ease;
   z-index: 100;
 }
 
+/* ANIMAÇÃO */
+.dropdown-menu.open {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: all;
+}
+
+/* USER INFO */
 .user-info {
-  padding: 10px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
 }
 
-.dropdown-menu button {
-  width: 100%;
-  padding: 10px;
+.user-info strong {
+  display: block;
+  color: #e5e7eb;
+}
+
+.user-info p {
+  font-size: 12px;
+  color: #94a3b8;
+}
+
+/* DIVISOR */
+.dropdown-menu hr {
   border: none;
-  background: none;
-  text-align: left;
-  cursor: pointer;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  margin: 10px 0;
 }
 
+/* BOTÕES */
+.dropdown-menu button {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  width: 100%;
+  text-align: left;
+
+  padding: 10px;
+  margin-top: 4px;
+
+  border-radius: 8px;
+  border: none;
+
+  background: transparent;
+  color: #e5e7eb;
+
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+/* HOVER */
 .dropdown-menu button:hover {
-  background: #f5f5f5;
+  background: rgba(59, 130, 246, 0.15);
+}
+
+/* LOGOUT */
+.dropdown-menu .logout:hover {
+  background: rgba(239, 68, 68, 0.2);
+  color: #f87171;
+}
+
+/* BOTÃO SAIR (DESTAQUE) */
+.dropdown-menu button:last-child:hover {
+  background: rgba(239, 68, 68, 0.2);
+  color: #f87171;
 }

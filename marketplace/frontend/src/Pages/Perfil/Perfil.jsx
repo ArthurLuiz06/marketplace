@@ -144,6 +144,8 @@ function Perfil() {
 
         <div className="perfil-info">
 
+          <h3>Dados pessoais</h3>
+
           <label>Nome</label>
           <input
             value={nome}
@@ -158,75 +160,58 @@ function Perfil() {
             onChange={(e) => setEmail(e.target.value)}
           />
 
+          <h3>Segurança</h3>
+
           <label>Senha Atual</label>
-          <div style={{ position: "relative" }}>
+          <div className="input-password">
             <input
               type={mostrarSenhaAtual ? "text" : "password"}
               value={senhaAtual}
               disabled={!editando}
               onChange={(e) => setSenhaAtual(e.target.value)}
             />
-
-            <span
-              onClick={() => setMostrarSenhaAtual(!mostrarSenhaAtual)}
-              style={{
-                position: "absolute",
-                right: "10px",
-                top: "60%",
-                transform: "translateY(-50%)",
-                cursor: "pointer",
-                color: "#aaa"
-              }}
-            >
+            <span onClick={() => setMostrarSenhaAtual(!mostrarSenhaAtual)} className="eye-icon">
               {mostrarSenhaAtual ? <EyeOff size={20} /> : <Eye size={20} />}
             </span>
           </div>
 
           <label>Nova Senha</label>
-          <div style={{ position: "relative" }}>
+          <div className="input-password">
             <input
               type={mostrarNovaSenha ? "text" : "password"}
               value={novaSenha}
               disabled={!editando}
               onChange={(e) => setNovaSenha(e.target.value)}
             />
-
-            <span
-              onClick={() => setMostrarNovaSenha(!mostrarNovaSenha)}
-              style={{
-                position: "absolute",
-                right: "10px",
-                top: "60%",
-                transform: "translateY(-50%)",
-                cursor: "pointer",
-                color: "#aaa"
-              }}
-            >
-              {mostrarSenhaAtual ? <EyeOff size={20} /> : <Eye size={20} />}
+            <span onClick={() => setMostrarNovaSenha(!mostrarNovaSenha)} className="eye-icon">
+              {mostrarNovaSenha ? <EyeOff size={20} /> : <Eye size={20} />}
             </span>
           </div>
 
-          <label>Rua</label>
-          <input
-            value={rua}
-            disabled={!editando}
-            onChange={(e) => setRua(e.target.value)}
-          />
+          <h3>Endereço</h3>
 
-          <label>Cidade</label>
-          <input
-            value={cidade}
-            disabled={!editando}
-            onChange={(e) => setCidade(e.target.value)}
-          />
+          {/* Rua + Número */}
+          <div className="input-row">
+            <div>
+              <label>Rua</label>
+              <input
+                value={rua}
+                disabled={!editando}
+                onChange={(e) => setRua(e.target.value)}
+              />
+            </div>
 
-          <label>Estado</label>
-          <input
-            value={estado}
-            disabled={!editando}
-            onChange={(e) => setEstado(e.target.value)}
-          />
+            <div>
+              <label>Número</label>
+              <input
+                value={numero}
+                disabled={!editando}
+                onChange={(e) => setNumero(e.target.value)}
+              />
+            </div>
+          </div>
 
+          {/* Bairro */}
           <label>Bairro</label>
           <input
             value={bairro}
@@ -234,18 +219,33 @@ function Perfil() {
             onChange={(e) => setBairro(e.target.value)}
           />
 
+          {/* Cidade + Estado */}
+          <div className="input-row">
+            <div>
+              <label>Cidade</label>
+              <input
+                value={cidade}
+                disabled={!editando}
+                onChange={(e) => setCidade(e.target.value)}
+              />
+            </div>
+
+            <div>
+              <label>Estado</label>
+              <input
+                value={estado}
+                disabled={!editando}
+                onChange={(e) => setEstado(e.target.value)}
+              />
+            </div>
+          </div>
+
+          {/* CEP */}
           <label>CEP</label>
           <input
             value={cep}
             disabled={!editando}
             onChange={(e) => setCep(e.target.value)}
-          />
-
-          <label>Número</label>
-          <input
-            value={numero}
-            disabled={!editando}
-            onChange={(e) => setNumero(e.target.value)}
           />
 
         </div>
@@ -259,6 +259,13 @@ function Perfil() {
             Salvar Alterações
           </button>
         )}
+
+        <button 
+        className="btn-secundario"
+        onClick={() => navigate("/")}
+        >
+          Voltar
+        </button>
       </div>
     </div>
   );

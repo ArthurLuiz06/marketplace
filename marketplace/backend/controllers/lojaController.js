@@ -15,7 +15,6 @@ exports.createLoja = (req, res) => {
 
   const id_usuario = req.user.id;
 
-  console.log("BODY:", req.body);
 
   // ✅ VALIDAÇÃO BÁSICA
   if (!nome_loja || !descricao || !rua || !cidade || !estado || !cep) {
@@ -58,6 +57,12 @@ exports.createLoja = (req, res) => {
           });
         }
 
+        if (err.code === "ER_DUP_ENTRY") {
+          return res.status(400).json({
+            erro: "Usuário já possui uma loja"
+          });
+        }
+
         return res.status(500).json({ erro: "Erro ao criar loja" });
       }
 
@@ -67,7 +72,7 @@ exports.createLoja = (req, res) => {
 
       // 📍 3. CRIAR ENDEREÇO
       const sqlEndereco = `
-        INSERT INTO endereco_loja
+        INSERT INTO enderecos_loja
         (id_loja, rua, numero, bairro, cidade, estado, cep)
         VALUES (?, ?, ?, ?, ?, ?, ?)
       `;
@@ -106,5 +111,32 @@ exports.createLoja = (req, res) => {
         });
       });
     });
+  });
+};
+
+
+exports.getMinhaLoja = (req, res) => {
+  const connection = require("../database/connection");
+  const id_usuario = req.user.id;
+
+  const sql = `
+    SELECT l.id_loja, l.nome_loja, l.descricao,
+           e.rua, e.numero, e.bairro, e.cidade, e.estado, e.cep
+    FROM lojas l
+    LEFT JOIN endereco_loja e ON l.id_loja = e.id_loja
+    WHERE l.id_usuario = ?
+  `;
+
+  connection.query(sql, [id_usuario], (err, result) => {
+    if (err) {
+      console.log("ERRO:", err);
+      return res.status(500).json({ erro: "Erro no servidor" });
+    }
+
+    if (result.length === 0) {
+      return res.json({ loja: null });
+    }
+
+    return res.json({ loja: result[0] });
   });
 };
