@@ -2,25 +2,23 @@ const connection = require("../database/connection")
 
 exports.createProduto = (req, res) => {
 
-  const { nome, descricao, preco, estoque } = req.body;
+  const { nome_produto, descricao, preco, estoque, id_categoria } = req.body;
   const id_usuario = req.user.id;
 
   const imagem = req.file ? req.file.filename : null;
 
-  //  VALIDAÇÃO NOME
-  if (!nome) {
-    return res.status(400).json({ erro: "Nome é obrigatório" });
+  // ✅ VALIDAÇÃO
+  if (!nome_produto) {
+    return res.status(400).json({ erro: "Nome do produto é obrigatório" });
   }
 
-  //  VALIDAÇÃO PREÇO
   const precoNum = Number(preco);
   if (isNaN(precoNum) || precoNum <= 0) {
     return res.status(400).json({
-      erro: "Preço deve ser um número maior que zero"
+      erro: "Preço inválido"
     });
   }
 
-  //  VALIDAÇÃO ESTOQUE
   let estoqueNum = 0;
   if (estoque !== undefined) {
     estoqueNum = Number(estoque);
@@ -48,13 +46,22 @@ exports.createProduto = (req, res) => {
     const id_loja = result[0].id_loja;
 
     const sqlProduto = `
-      INSERT INTO produtos (nome, descricao, preco, estoque, imagem, id_loja)
-      VALUES (?, ?, ?, ?, ?, ?)
+      INSERT INTO produtos 
+      (id_loja, id_categoria, nome_produto, descricao, preco, estoque, imagem)
+      VALUES (?, ?, ?, ?, ?, ?, ?)
     `;
 
     connection.query(
       sqlProduto,
-      [nome, descricao, precoNum, estoqueNum, imagem, id_loja],
+      [
+        id_loja,
+        id_categoria || null,
+        nome_produto,
+        descricao,
+        precoNum,
+        estoqueNum,
+        imagem
+      ],
       (err2) => {
         if (err2) {
           console.log(err2);
@@ -75,9 +82,10 @@ exports.getMeusProdutos = (req, res) => {
   const id_usuario = req.user.id;
 
   const sql = `
-    SELECT p.*
+    SELECT p.*, c.nome_categoria
     FROM produtos p
     INNER JOIN lojas l ON p.id_loja = l.id_loja
+    LEFT JOIN categorias c ON p.id_categoria = c.id_categoria
     WHERE l.id_usuario = ?
   `;
 
@@ -87,7 +95,6 @@ exports.getMeusProdutos = (req, res) => {
       return res.status(500).json({ erro: "Erro no servidor" });
     }
 
-    // adicionar URL completa da imagem
     const produtos = result.map(p => ({
       ...p,
       imagem_url: p.imagem
@@ -102,7 +109,7 @@ exports.getMeusProdutos = (req, res) => {
 exports.updateProduto = (req, res) => {
 
   const { id } = req.params;
-  const { nome, descricao, preco, estoque } = req.body;
+  const { nome_produto,id_categoria, descricao, preco, estoque } = req.body;
   const id_usuario = req.user.id;
 
   const novaImagem = req.file ? req.file.filename : null;
@@ -130,9 +137,14 @@ exports.updateProduto = (req, res) => {
     const campos = [];
     const valores = [];
 
-    if (nome) {
-      campos.push("nome = ?");
-      valores.push(nome);
+    if (nome_produto) {
+      campos.push("nome_produto = ?");
+      valores.push(nome_produto);
+    }
+
+    if (id_categoria) {
+      campos.push("id_categoria = ?");
+      valores.push(id_categoria);
     }
 
     if (descricao) {
