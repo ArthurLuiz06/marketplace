@@ -16,7 +16,7 @@ exports.createLoja = (req, res) => {
   const id_usuario = req.user.id;
 
 
-  // ✅ VALIDAÇÃO BÁSICA
+  //  VALIDAÇÃO BÁSICA
   if (!nome_loja || !descricao || !rua || !cidade || !estado || !cep) {
     return res.status(400).json({
       erro: "Preencha todos os campos obrigatórios"
@@ -50,7 +50,7 @@ exports.createLoja = (req, res) => {
       if (err) {
         console.log("ERRO LOJA:", err);
 
-        // 🔥 TRATAMENTO DO UNIQUE (caso banco bloqueie)
+        //  TRATAMENTO DO UNIQUE (caso banco bloqueie)
         if (err.code === "ER_DUP_ENTRY") {
           return res.status(400).json({
             erro: "Usuário já possui uma loja"
@@ -70,7 +70,7 @@ exports.createLoja = (req, res) => {
 
       console.log("ID LOJA:", id_loja);
 
-      // 📍 3. CRIAR ENDEREÇO
+      //  3. CRIAR ENDEREÇO
       const sqlEndereco = `
         INSERT INTO enderecos_loja
         (id_loja, rua, numero, bairro, cidade, estado, cep)
@@ -123,7 +123,7 @@ exports.getMinhaLoja = (req, res) => {
     SELECT l.id_loja, l.nome_loja, l.descricao,
            e.rua, e.numero, e.bairro, e.cidade, e.estado, e.cep
     FROM lojas l
-    LEFT JOIN endereco_loja e ON l.id_loja = e.id_loja
+    LEFT JOIN enderecos_loja e ON l.id_loja = e.id_loja
     WHERE l.id_usuario = ?
   `;
 

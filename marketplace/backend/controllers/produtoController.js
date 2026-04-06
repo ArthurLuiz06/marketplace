@@ -1,0 +1,244 @@
+const connection = require("../database/connection")
+
+exports.createProduto = (req, res) => {
+
+  const { nome, descricao, preco, estoque } = req.body;
+  const id_usuario = req.user.id;
+
+  const imagem = req.file ? req.file.filename : null;
+
+  //  VALIDAÇÃO NOME
+  if (!nome) {
+    return res.status(400).json({ erro: "Nome é obrigatório" });
+  }
+
+  //  VALIDAÇÃO PREÇO
+  const precoNum = Number(preco);
+  if (isNaN(precoNum) || precoNum <= 0) {
+    return res.status(400).json({
+      erro: "Preço deve ser um número maior que zero"
+    });
+  }
+
+  //  VALIDAÇÃO ESTOQUE
+  let estoqueNum = 0;
+  if (estoque !== undefined) {
+    estoqueNum = Number(estoque);
+
+    if (isNaN(estoqueNum) || estoqueNum < 0) {
+      return res.status(400).json({
+        erro: "Estoque inválido"
+      });
+    }
+  }
+
+  const sqlLoja = `
+    SELECT id_loja FROM lojas WHERE id_usuario = ?
+  `;
+
+  connection.query(sqlLoja, [id_usuario], (err, result) => {
+    if (err) return res.status(500).json({ erro: "Erro no servidor" });
+
+    if (result.length === 0) {
+      return res.status(404).json({
+        erro: "Você não possui uma loja"
+      });
+    }
+
+    const id_loja = result[0].id_loja;
+
+    const sqlProduto = `
+      INSERT INTO produtos (nome, descricao, preco, estoque, imagem, id_loja)
+      VALUES (?, ?, ?, ?, ?, ?)
+    `;
+
+    connection.query(
+      sqlProduto,
+      [nome, descricao, precoNum, estoqueNum, imagem, id_loja],
+      (err2) => {
+        if (err2) {
+          console.log(err2);
+          return res.status(500).json({ erro: "Erro ao criar produto" });
+        }
+
+        return res.status(201).json({
+          mensagem: "Produto criado com sucesso!"
+        });
+      }
+    );
+  });
+};
+
+
+exports.getMeusProdutos = (req, res) => {
+
+  const id_usuario = req.user.id;
+
+  const sql = `
+    SELECT p.*
+    FROM produtos p
+    INNER JOIN lojas l ON p.id_loja = l.id_loja
+    WHERE l.id_usuario = ?
+  `;
+
+  connection.query(sql, [id_usuario], (err, result) => {
+    if (err) {
+      console.log("ERRO", err);
+      return res.status(500).json({ erro: "Erro no servidor" });
+    }
+
+    // adicionar URL completa da imagem
+    const produtos = result.map(p => ({
+      ...p,
+      imagem_url: p.imagem
+        ? `http://localhost:3000/uploads/${p.imagem}`
+        : null
+    }));
+
+    return res.json({ produtos });
+  });
+};
+
+exports.updateProduto = (req, res) => {
+
+  const { id } = req.params;
+  const { nome, descricao, preco, estoque } = req.body;
+  const id_usuario = req.user.id;
+
+  const novaImagem = req.file ? req.file.filename : null;
+
+  const sqlCheck = `
+    SELECT p.id_produto
+    FROM produtos p
+    INNER JOIN lojas l ON p.id_loja = l.id_loja
+    WHERE p.id_produto = ? AND l.id_usuario = ?
+  `;
+
+  connection.query(sqlCheck, [id, id_usuario], (err, result) => {
+    if (err) {
+      console.log("ERRO CHECK:", err);
+      return res.status(500).json({ erro: "Erro no servidor" });
+    }
+
+    if (result.length === 0) {
+      return res.status(403).json({
+        erro: "Produto não pertence à sua loja"
+      });
+    }
+
+    //  UPDATE DINÂMICO
+    const campos = [];
+    const valores = [];
+
+    if (nome) {
+      campos.push("nome = ?");
+      valores.push(nome);
+    }
+
+    if (descricao) {
+      campos.push("descricao = ?");
+      valores.push(descricao);
+    }
+
+    if (preco) {
+      const precoNum = Number(preco);
+      if (isNaN(precoNum) || precoNum <= 0) {
+        return res.status(400).json({ erro: "Preço inválido" });
+      }
+
+      campos.push("preco = ?");
+      valores.push(precoNum);
+    }
+
+    if (estoque !== undefined) {
+      const estoqueNum = Number(estoque);
+
+      if (isNaN(estoqueNum) || estoqueNum < 0) {
+        return res.status(400).json({ erro: "Estoque inválido" });
+      }
+
+      campos.push("estoque = ?");
+      valores.push(estoqueNum);
+    }
+
+    if (novaImagem) {
+      campos.push("imagem = ?");
+      valores.push(novaImagem);
+    }
+
+    if (campos.length === 0) {
+      return res.status(400).json({
+        erro: "Nenhum campo para atualizar"
+      });
+    }
+
+    valores.push(id);
+
+    const sqlUpdate = `
+      UPDATE produtos
+      SET ${campos.join(", ")}
+      WHERE id_produto = ?
+    `;
+
+    connection.query(sqlUpdate, valores, (err2) => {
+      if (err2) {
+        console.log("ERRO UPDATE:", err2);
+        return res.status(500).json({
+          erro: "Erro ao atualizar produto"
+        });
+      }
+
+      return res.json({
+        mensagem: "Produto atualizado com sucesso!"
+      });
+    });
+  });
+};
+
+
+exports.deleteProduto = (req, res) => {
+
+  const { id } = req.params;
+  const id_usuario = req.user.id;
+
+  // VERIFICAR PERMISSÃO
+  const sqlCheck = `
+    SELECT p.id_produto
+    FROM produtos p
+    INNER JOIN lojas l ON p.id_loja = l.id_loja
+    WHERE p.id_produto = ? AND l.id_usuario = ?
+  `;
+
+  connection.query(sqlCheck, [id, id_usuario], (err, result) => {
+    if (err) {
+      console.log("ERRO CHECK:", err);
+      return res.status(500).json({ erro: "Erro no servidor" });
+    }
+
+    if (result.length === 0) {
+      return res.status(403).json({
+        erro: "Produto não pertence à sua loja"
+      });
+    }
+
+    //  DELETAR
+    const sqlDelete = `
+      DELETE FROM produtos WHERE id_produto = ?
+    `;
+
+    connection.query(sqlDelete, [id], (err2) => {
+      if (err2) {
+        console.log("ERRO DELETE:", err2);
+        return res.status(500).json({
+          erro: "Erro ao deletar produto"
+        });
+      }
+
+      return res.json({
+        mensagem: "Produto deletado com sucesso!"
+      });
+    });
+  });
+};
+
+

@@ -3,6 +3,8 @@ const router = express.Router();
 
 const userController = require("../controllers/userController")
 const criarLojaController = require("../controllers/lojaController")
+const produtoController = require("../controllers/produtoController")
+const upload = require("../middleware/upload")
 const authMiddleware = require("../middleware/auth")
 
 // Adiciona usuarios
@@ -18,5 +20,11 @@ router.get("/perfil", authMiddleware, userController.getPerfil);
 
 // Atualizar senha
 router.put("/perfil/senha", authMiddleware,userController.updateSenha)
+
+//Rotas de produtos                                   nome do campo  
+router.post("/produtos", authMiddleware, upload.single("imagem") ,produtoController.createProduto);
+router.get("/produtos/minha-loja", authMiddleware, produtoController.getMeusProdutos);
+router.put("/produtos/:id", authMiddleware, produtoController.updateProduto);
+router.delete("/produtos:id", authMiddleware, produtoController.deleteProduto);
 
 module.exports = router;
