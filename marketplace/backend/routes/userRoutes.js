@@ -11,6 +11,7 @@ const authMiddleware = require("../middleware/auth")
 router.post("/cadastro", userController.createUser);
 router.post("/login", userController.loginUser)
 
+//Rotas de Loja
 router.post("/loja", authMiddleware, criarLojaController.createLoja)
 router.get("/minha-loja", authMiddleware, criarLojaController.getMinhaLoja)
 
@@ -21,10 +22,12 @@ router.get("/perfil", authMiddleware, userController.getPerfil);
 // Atualizar senha
 router.put("/perfil/senha", authMiddleware,userController.updateSenha)
 
-//Rotas de produtos                                   nome do campo  
+//Rotas de produtos                                  nome do campo  
 router.post("/produtos", authMiddleware, upload.single("imagem") ,produtoController.createProduto);
 router.get("/produtos/minha-loja", authMiddleware, produtoController.getMeusProdutos);
 router.put("/produtos/:id", authMiddleware, produtoController.updateProduto);
 router.delete("/produtos:id", authMiddleware, produtoController.deleteProduto);
 
+//Categorias de produtos
+router.get("/categorias",produtoController.getCategorias)
 module.exports = router;

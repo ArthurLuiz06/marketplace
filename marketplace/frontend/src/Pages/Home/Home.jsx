@@ -9,6 +9,7 @@ function Home() {
 
   const [open, setOpen] = useState(false)
   const [minhaLoja, setMinhaLoja] = useState(null)
+  const [mensagem, setMensagem] = useState("");
 
   const user = JSON.parse(localStorage.getItem("user"))
 
@@ -28,33 +29,49 @@ function Home() {
   }, [])
 
   useEffect(() => {
-    if (open && token) {
-      fetch("http://localhost:3001/minha-loja", {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${token}`
-        }
-      })
-        .then(res => res.json())
-        .then(data => {
-          if (data.loja) {
-            setMinhaLoja(data.loja)
-          } else {
-            setMinhaLoja(null)
-          }
-        })
-        .catch(() => setMinhaLoja(null))
-    }
-  }, [open]);
+    if (!token) return;
 
+    fetch("http://localhost:3001/minha-loja", {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    })
+      .then(res => res.json())
+      .then(data => {
+        setMinhaLoja(data.loja || null);
+      })
+      .catch(() => setMinhaLoja(null));
+  }, []);
   const nomeLoja = "ByteShop";
 
   //  fluxo vendedor
-  const handleVendedor = () => {
+  const handleVendedor = async () => {
     if (!token) {
       navigate("/login", { state: { redirect: "/loja" } });
-    } else {
-      navigate("/loja");
+      return;
+    }
+
+    try {
+      const res = await fetch("http://localhost:3001/minha-loja", {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      });
+
+      const data = await res.json();
+
+      if (data.loja) {
+        setMensagem("Você já possui uma loja!");
+        setTimeout(() => {
+          setMensagem("")
+        }, 3000)
+      } else {
+        navigate("/loja");
+      }
+
+    } catch (err) {
+      console.error(err);
+      setMensagem("Erro ao verificar loja");
     }
   };
 
@@ -146,6 +163,13 @@ function Home() {
           </button>
         </div>
       </div>
+
+      {mensagem && (
+        <div className="aviso">
+          {mensagem}
+        </div>
+      )}
+
 
       {/* DESTAQUE */}
       <section className="destaque">

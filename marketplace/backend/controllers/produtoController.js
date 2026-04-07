@@ -254,3 +254,17 @@ exports.deleteProduto = (req, res) => {
 };
 
 
+exports.getCategorias = (req, res) => {
+  
+  const sql = `SELECT * FROM  categorias`;
+
+  connection.query(sql, (err, result) => {
+    if(err) {
+      console.log("ERRO:", err)
+      return res.status(500).json({ erro: "Erro no servidor"})
+    }
+
+    return res.json({ categorias: result})
+  })
+}
+

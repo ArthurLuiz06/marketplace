@@ -321,3 +321,14 @@
   background: rgba(239, 68, 68, 0.2);
   color: #f87171;
 }
+
+
+.aviso {
+  margin-top: 15px;
+  padding: 10px;
+  background-color: #ffe082;
+  color: #333;
+  border-radius: 5px;
+  font-weight: bold;
+  text-align: center;
+}
