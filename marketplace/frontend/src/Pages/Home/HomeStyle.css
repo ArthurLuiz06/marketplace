@@ -13,7 +13,6 @@
   padding: 0 40px;
   height: 80px;
 
-  /* efeito glass */
   background: rgba(2, 6, 23, 0.6);
   backdrop-filter: blur(10px);
   border-bottom: 1px solid rgba(59, 130, 246, 0.2);
@@ -57,12 +56,10 @@
 
 .hero h1 {
   font-size: 44px;
-  font-weight: 700;
 }
 
 .hero h2 {
   font-size: 34px;
-  font-weight: 700;
   background: linear-gradient(90deg, #3b82f6, #9333ea, #f97316);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -71,7 +68,6 @@
 .hero p {
   margin-top: 12px;
   color: #94a3b8;
-  font-size: 16px;
 }
 
 /* BOTÕES HERO */
@@ -82,58 +78,72 @@
   justify-content: center;
 }
 
-.btn-primary {
-  background: linear-gradient(90deg, #3b82f6, #9333ea);
-  border: none;
-  padding: 14px 32px;
-  color: white;
+/* BOTÕES ESCOPADOS */
+.home-container .btn-primary {
+  padding: 12px 28px;
   border-radius: 12px;
+  border: none;
+  width: auto;
+
+  background: linear-gradient(90deg, #3b82f6, #9333ea);
+  color: white;
+
   cursor: pointer;
   font-weight: 600;
   transition: 0.3s;
-  box-shadow: 0 0 15px rgba(59, 130, 246, 0.5);
 }
 
-.btn-primary:hover {
+.home-container .btn-primary:hover {
   transform: translateY(-2px);
   opacity: 0.9;
 }
 
-/* BOTÃO SECUNDÁRIO */
-.btn-outline {
-  background: transparent;
-  border: 2px solid #f97316;
-  padding: 14px 32px;
-  color: #f97316;
+.home-container .btn-outline {
+  padding: 12px 28px;
   border-radius: 12px;
+  border: 2px solid #f97316;
+  background: transparent;
+  color: #f97316;
+
   cursor: pointer;
   font-weight: 600;
   transition: 0.3s;
 }
 
-.btn-outline:hover {
+.home-container .btn-outline:hover {
   background: #f97316;
   color: white;
-  box-shadow: 0 0 10px rgba(249, 115, 22, 0.5);
 }
 
-/* DESTAQUE */
+/* ========================= */
+/* 🔥 DESTAQUE CORRIGIDO */
+/* ========================= */
+
 .destaque {
   margin-top: 100px;
   text-align: center;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* 🔥 centraliza TUDO */
 }
 
 .destaque h2 {
   font-size: 28px;
+  margin-bottom: 20px;
 }
 
 /* CARDS */
 .cards {
   display: flex;
-  justify-content: center;
+  justify-content: center; /* 🔥 centralização correta */
+  align-items: center;
   gap: 25px;
-  margin-top: 35px;
+  margin-top: 20px;
   flex-wrap: wrap;
+
+  width: 100%;
+  max-width: 900px; /* 🔥 impede ficar jogado pra esquerda */
 }
 
 /* CARD */
@@ -142,11 +152,13 @@
   padding: 25px;
   border-radius: 16px;
   width: 240px;
+
   transition: 0.3s;
   border: 1px solid rgba(59, 130, 246, 0.15);
   backdrop-filter: blur(8px);
 }
 
+/* 🔥 HOVER RESTAURADO */
 .card:hover {
   transform: translateY(-8px) scale(1.02);
   border: 1px solid #3b82f6;
@@ -158,7 +170,7 @@
   margin-bottom: 12px;
 }
 
-/* CORES DOS ÍCONES */
+/* CORES */
 .card:nth-child(1) .icon {
   color: #3b82f6;
 }
@@ -171,19 +183,15 @@
   color: #f97316;
 }
 
-
-/* USER MENU */
-/* USER MENU */
+/* USER MENU (mantido igual) */
 .user-menu {
   position: relative;
 }
 
-/* BOTÃO */
 .user-button {
   display: flex;
   align-items: center;
   gap: 8px;
-
   padding: 6px 12px;
 
   border-radius: 12px;
@@ -194,19 +202,12 @@
 
   color: #e5e7eb;
   cursor: pointer;
-  transition: 0.3s;
-}
-
-.user-button:hover {
-  border-color: #f97316;
-  box-shadow: 0 0 12px rgba(249, 115, 22, 0.4);
 }
 
 /* AVATAR */
 .avatar {
   width: 28px;
   height: 28px;
-
   border-radius: 50%;
 
   display: flex;
@@ -216,119 +217,4 @@
   background: linear-gradient(135deg, #3b82f6, #9333ea);
   color: white;
   font-weight: bold;
-  font-size: 13px;
-}
-
-.avatar.big {
-  width: 40px;
-  height: 40px;
-  font-size: 16px;
-}
-
-/* DROPDOWN */
-.dropdown-menu {
-  position: absolute;
-  top: 120%;
-  right: 0;
-
-  width: 240px;
-  padding: 15px;
-
-  border-radius: 14px;
-
-  background: rgba(17, 24, 39, 0.75);
-  backdrop-filter: blur(14px);
-
-  border: 1px solid rgba(59, 130, 246, 0.2);
-
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
-
-  opacity: 0;
-  transform: translateY(-10px);
-  pointer-events: none;
-
-  transition: all 0.25s ease;
-  z-index: 100;
-}
-
-/* ANIMAÇÃO */
-.dropdown-menu.open {
-  opacity: 1;
-  transform: translateY(0);
-  pointer-events: all;
-}
-
-/* USER INFO */
-.user-info {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  margin-bottom: 10px;
-}
-
-.user-info strong {
-  display: block;
-  color: #e5e7eb;
-}
-
-.user-info p {
-  font-size: 12px;
-  color: #94a3b8;
-}
-
-/* DIVISOR */
-.dropdown-menu hr {
-  border: none;
-  border-top: 1px solid rgba(255, 255, 255, 0.08);
-  margin: 10px 0;
-}
-
-/* BOTÕES */
-.dropdown-menu button {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-
-  width: 100%;
-  text-align: left;
-
-  padding: 10px;
-  margin-top: 4px;
-
-  border-radius: 8px;
-  border: none;
-
-  background: transparent;
-  color: #e5e7eb;
-
-  cursor: pointer;
-  transition: 0.2s;
-}
-
-/* HOVER */
-.dropdown-menu button:hover {
-  background: rgba(59, 130, 246, 0.15);
-}
-
-/* LOGOUT */
-.dropdown-menu .logout:hover {
-  background: rgba(239, 68, 68, 0.2);
-  color: #f87171;
-}
-
-/* BOTÃO SAIR (DESTAQUE) */
-.dropdown-menu button:last-child:hover {
-  background: rgba(239, 68, 68, 0.2);
-  color: #f87171;
-}
-
-
-.aviso {
-  margin-top: 15px;
-  padding: 10px;
-  background-color: #ffe082;
-  color: #333;
-  border-radius: 5px;
-  font-weight: bold;
-  text-align: center;
 }
