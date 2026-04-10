@@ -11,21 +11,28 @@ function MinhaLoja() {
 
   const api = axios.create({
     baseURL: "http://localhost:3001",
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
   });
 
   useEffect(() => {
+    if (!token) {
+      navigate("/login");
+      return;
+    }
+
     carregarProdutos();
   }, []);
 
   const carregarProdutos = async () => {
     try {
-      const res = await api.get("/produtos");
-      setProdutos(res.data);
+      const res = await api.get("/produtos/minha-loja", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      setProdutos(res.data.data || []);
     } catch (err) {
-      console.error(err);
+      console.error("Erro ao carregar produtos:", err);
     }
   };
 
@@ -33,84 +40,121 @@ function MinhaLoja() {
     if (!window.confirm("Tem certeza que deseja deletar?")) return;
 
     try {
-      await api.delete(`/produtos/${id}`);
+      await api.delete(`/produtos/${id}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
       carregarProdutos();
     } catch (err) {
-      console.error(err);
+      console.error("Erro ao deletar:", err);
     }
   };
 
   return (
-    <div className="minha-loja">
+    <div className="minha-loja-container">
 
-      {/* TOPO LIMPO */}
-      <h1 className="titulo">Minha Loja</h1>
+      {/* 🔥 HEADER FIXO */}
+      <div className="header-loja">
 
-      {/* DASHBOARD */}
-      <div className="dashboard-cards">
-        <div className="card-info">
-          <h3>Total de Produtos</h3>
-          <p>{produtos.length}</p>
-        </div>
+        <h1 className="titulo">Minha Loja</h1>
 
-        <div className="card-info">
-          <h3>Vendas</h3>
-          <p>Em breve</p>
-        </div>
-      </div>
+        <div className="topo-linha">
 
-      {/* 🔥 BOTÃO PRINCIPAL (POSIÇÃO IDEAL) */}
-      <div className="acao-principal">
-        <button
-          className="btn-primary"
-          onClick={() => navigate("/minha-loja/novo-produto")}
-        >
-          + Cadastrar Produto
-        </button>
-      </div>
+          <div className="cards-dashboard">
 
-      {/* LISTA */}
-      <div className="lista-produtos">
-        {produtos.length === 0 ? (
-          <p className="sem-produto">Nenhum produto cadastrado</p>
-        ) : (
-          produtos.map((prod) => (
-            <div key={prod.id_produto} className="card-produto">
-
-              <img
-                src={
-                  prod.imagem
-                    ? `http://localhost:3001/uploads/${prod.imagem}`
-                    : "https://via.placeholder.com/150"
-                }
-                alt={prod.nome_produto}
-                className="imagem-produto"
-              />
-
-              <h2 className="nome-produto">{prod.nome_produto}</h2>
-              <p className="preco-produto">R$ {prod.preco}</p>
-
-              <div className="acoes-produto">
-
-                <button
-                  onClick={() => navigate(`/minha-loja/editar/${prod.id_produto}`)}
-                  className="btn btn-edit"
-                >
-                  Editar
-                </button>
-
-                <button
-                  onClick={() => handleDelete(prod.id_produto)}
-                  className="btn btn-delete"
-                >
-                  Deletar
-                </button>
-
-              </div>
-
+            <div className="card-info">
+              <span>Produtos</span>
+              <strong>{produtos.length}</strong>
             </div>
-          ))
-        )}
+
+            <div className="card-info">
+              <span>Faturamento</span>
+              <strong>R$ 0,00</strong>
+            </div>
+
+            <div className="card-info">
+              <span>Estoque</span>
+              <strong>
+                {produtos.reduce((total, p) => total + Number(p.estoque || 0), 0)}
+              </strong>
+            </div>
+
+          </div>
+
+          <button
+            className="btn-primary btn-small"
+            onClick={() => navigate("/minha-loja/novo-produto")}
+          >
+            + Produto
+          </button>
+
+        </div>
+
+      </div>
+      {/* 🔥 CONTEÚDO (PRODUTOS) */}
+      <div className="conteudo-loja">
+
+        <div className="lista-produtos">
+          {produtos.length === 0 ? (
+            <p className="sem-produto">Nenhum produto cadastrado</p>
+          ) : (
+            produtos.map((prod) => (
+              <div key={prod.id_produto} className="card-produto">
+
+                {/* IMAGEM */}
+                <div className="imagem-container">
+                  <img
+                    src={prod.imagem_url || "https://via.placeholder.com/300"}
+                    alt={prod.nome_produto}
+                    onError={(e) => {
+                      e.target.src = "https://via.placeholder.com/300";
+                    }}
+                  />
+                </div>
+
+                {/* CONTEÚDO */}
+                <div className="conteudo-produto">
+
+                  <h2 className="nome-produto">
+                    {prod.nome_produto}
+                  </h2>
+
+                  <p className="descricao-produto">
+                    {prod.descricao || "Sem descrição"}
+                  </p>
+
+                  <p className="preco-produto">
+                    R$ {Number(prod.preco).toFixed(2)}
+                  </p>
+
+                  <div className="acoes-produto">
+
+                    <button
+                      className="btn-edit"
+                      onClick={() =>
+                        navigate(`/minha-loja/editar/${prod.id_produto}`)
+                      }
+                    >
+                      Editar
+                    </button>
+
+                    <button
+                      className="btn-delete"
+                      onClick={() => handleDelete(prod.id_produto)}
+                    >
+                      Deletar
+                    </button>
+
+                  </div>
+
+                </div>
+              </div>
+            ))
+          )}
+        </div>
+
       </div>
 
     </div>

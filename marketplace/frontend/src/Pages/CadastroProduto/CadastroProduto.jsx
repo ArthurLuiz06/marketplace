@@ -97,7 +97,7 @@ function CadastroProduto() {
   return (
     <div className="minha-loja">
 
-      <form className="form-produto" onClick={handleSubmit}>
+      <form className="form-produto" onSubmit={handleSubmit}>
 
         <h1 className="titulo">Cadastrar Produto</h1>
 

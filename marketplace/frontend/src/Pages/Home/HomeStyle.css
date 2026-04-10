@@ -218,3 +218,82 @@
   color: white;
   font-weight: bold;
 }
+
+
+/* ========================= */
+/* 🔽 DROPDOWN MENU FIX */
+/* ========================= */
+
+.dropdown-menu {
+  position: absolute;
+  top: 60px;
+  right: 0;
+
+  width: 220px;
+  padding: 12px;
+
+  border-radius: 12px;
+
+  background: linear-gradient(135deg, #2c1a72, #6c63ff);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+
+  display: none;
+  flex-direction: column;
+  gap: 10px;
+
+  z-index: 999;
+}
+
+/* abrir menu */
+.dropdown-menu.open {
+  display: flex;
+}
+
+/* INFO DO USUÁRIO */
+.user-info {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.avatar.big {
+  width: 40px;
+  height: 40px;
+  font-size: 16px;
+}
+
+/* LINHA */
+.dropdown-menu hr {
+  border: none;
+  border-top: 1px solid rgba(255, 255, 255, 0.2);
+  margin: 5px 0;
+}
+
+/* BOTÕES DO DROPDOWN */
+.dropdown-menu button {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  width: 100%;
+  padding: 8px 10px;
+
+  border: none;
+  border-radius: 8px;
+
+  background: transparent;
+  color: white;
+
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+/* hover */
+.dropdown-menu button:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+/* botão logout */
+.dropdown-menu .logout {
+  color: #ffb4b4;
+}

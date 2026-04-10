@@ -5,7 +5,7 @@ import Cadastro from "../Pages/CadastroUsuarios/CadastroUsuario";
 import Home from "../Pages/Home/Home"
 import Perfil from "../Pages/Perfil/Perfil"
 import CriarLoja from "../Pages/CriarLoja/CriarLoja"
-import MinhaLoja from "../Pages/MinhaLoja/MinhaLoja";
+import MinhaLoja from "../Pages/MinhaLoja/minhaLoja";
 import CadastroProduto from "../Pages/CadastroProduto/CadastroProduto";
 
 function AppRoutes() {
